@@ -1,0 +1,4597 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاضنة الأطفال الذكية 👶 Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1f2937;
+            --light: #f9fafb;
+        }
+
+        [data-theme="dark"] {
+            --bg: #111827;
+            --card-bg: #1f2937;
+            --text: #f9fafb;
+            --border: #374151;
+        }
+
+        [data-theme="light"] {
+            --bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: #ffffff;
+            --text: #1f2937;
+            --border: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            transition: all 0.3s;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* الهيدر */
+        .header {
+            background: var(--card-bg);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left h1 {
+            font-size: 1.8em;
+            color: var(--primary);
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: var(--primary);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.3em;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .status-badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .badge-online { background: var(--success); color: white; }
+        .badge-critical { background: var(--danger); color: white; }
+        .badge-normal { background: var(--primary); color: white; }
+        .badge-warning { background: var(--warning); color: white; }
+        .badge-offline { background: #6b7280; color: white; }
+
+        /* التبويبات */
+        .tabs {
+            background: var(--card-bg);
+            padding: 10px;
+            border-radius: 15px;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .tab {
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        /* المحتوى */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* الشبكة */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        }
+
+        /* البطاقة */
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* عرض القراءات */
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .sensor-item {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .sensor-item {
+            background: #374151;
+        }
+
+        .sensor-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .sensor-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .sensor-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .sensor-label {
+            font-size: 0.9em;
+            opacity: 0.7;
+            font-weight: 600;
+        }
+
+        .sensor-status {
+            margin-top: 8px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .status-ok {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .status-alert {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        /* السلايدر */
+        .slider-container {
+            margin: 20px 0;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .slider-value {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #e5e7eb;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        [data-theme="dark"] .slider {
+            background: #4b5563;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* الحاضنة المرئية */
+        .incubator-visual {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(to bottom, #e0f2fe 0%, #bae6fd 100%);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 4px solid var(--primary);
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] .incubator-visual {
+            background: linear-gradient(to bottom, #1e3a8a 0%, #1e40af 100%);
+        }
+
+        .baby-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 6em;
+            animation: breathe 3s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        .incubator-overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            padding: 10px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        [data-theme="dark"] .incubator-overlay {
+            background: rgba(31, 41, 55, 0.8);
+        }
+
+        /* أزرار التحكم */
+        .control-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* مفتاح التبديل */
+        .switch-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 12px;
+            margin: 10px 0;
+        }
+
+        [data-theme="dark"] .switch-container {
+            background: #374151;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 30px;
+        }
+
+        .switch-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .switch-slider {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        input:checked + .switch-slider:before {
+            transform: translateX(30px);
+        }
+
+        input:disabled + .switch-slider {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* الرسوم البيانية */
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* التنبيهات */
+        .alerts-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .alert-item {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-right: 4px solid;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slideIn 0.5s;
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border-right-color: #3b82f6;
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-right-color: var(--warning);
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border-right-color: var(--danger);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-right-color: var(--success);
+        }
+
+        .alert-icon {
+            font-size: 1.5em;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-time {
+            font-size: 0.85em;
+            opacity: 0.6;
+        }
+
+        /* زر الطوارئ */
+        .emergency-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            z-index: 999;
+        }
+
+        .emergency-btn:hover {
+            transform: scale(1.15);
+            box-shadow: 0 12px 30px rgba(239, 68, 68, 0.6);
+        }
+
+        .emergency-icon {
+            font-size: 2em;
+            animation: rotate 2s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* معلومات المريض */
+        .patient-info {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .patient-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .patient-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .patient-label {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        .patient-value {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        /* حقول التعديل */
+        .patient-edit-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            background: var(--card-bg);
+            color: var(--text);
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .patient-edit-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        [data-theme="dark"] .patient-edit-input {
+            background: #374151;
+            border-color: var(--primary);
+        }
+
+        .patient-field {
+            position: relative;
+        }
+
+        /* مربع الدردشة مع AI */
+        .ai-chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .ai-chat-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 3px solid rgba(255,255,255,0.2);
+        }
+
+        .ai-chat-header h3 {
+            margin: 0;
+            font-size: 1.3em;
+        }
+
+        .ai-status {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .ai-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .ai-chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: var(--light);
+        }
+
+        [data-theme="dark"] .ai-chat-messages {
+            background: #1f2937;
+        }
+
+        .ai-message {
+            display: flex;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ai-message.user {
+            flex-direction: row-reverse;
+        }
+
+        .ai-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            flex-shrink: 0;
+        }
+
+        .ai-message.ai .ai-avatar {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .ai-message.user .ai-avatar {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .ai-message-content {
+            max-width: 70%;
+            padding: 15px 18px;
+            border-radius: 18px;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+
+        .ai-message.ai .ai-message-content {
+            background: white;
+            color: var(--dark);
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] .ai-message.ai .ai-message-content {
+            background: #374151;
+            color: var(--text);
+        }
+
+        .ai-message.user .ai-message-content {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .ai-message-time {
+            font-size: 0.75em;
+            opacity: 0.6;
+            margin-top: 5px;
+        }
+
+        .ai-typing {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+        }
+
+        .ai-typing.active {
+            display: flex;
+        }
+
+        .ai-typing-dots {
+            display: flex;
+            gap: 4px;
+            padding: 12px 18px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] .ai-typing-dots {
+            background: #374151;
+        }
+
+        .ai-typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: typing 1.4s infinite;
+        }
+
+        .ai-typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .ai-typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        .ai-chat-input-container {
+            padding: 20px;
+            background: var(--card-bg);
+            border-top: 2px solid var(--border);
+            display: flex;
+            gap: 10px;
+        }
+
+        .ai-chat-input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 25px;
+            font-size: 1em;
+            font-family: inherit;
+            background: var(--light);
+            color: var(--text);
+            resize: none;
+            outline: none;
+            transition: all 0.3s;
+            max-height: 120px;
+        }
+
+        [data-theme="dark"] .ai-chat-input {
+            background: #374151;
+        }
+
+        .ai-chat-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .ai-send-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .ai-send-btn:hover:not(:disabled) {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .ai-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .ai-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 0 20px 15px 20px;
+            background: var(--card-bg);
+        }
+
+        .ai-suggestion-chip {
+            padding: 8px 16px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 20px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text);
+        }
+
+        .ai-suggestion-chip:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* حالة الاتصال */
+        .connection-status {
+            padding: 20px;
+            background: var(--light);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        [data-theme="dark"] .connection-status {
+            background: #374151;
+        }
+
+        .connection-status.disconnected {
+            border: 3px dashed var(--danger);
+        }
+
+        .connection-status.connected {
+            border: 3px solid var(--success);
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .status-connected {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .status-disconnected {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .status-dot-animated {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .connection-panel {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        [data-theme="dark"] .connection-panel {
+            background: #374151;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+            background: var(--card-bg);
+            color: var(--text);
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .last-sync {
+            font-size: 0.85em;
+            opacity: 0.6;
+            margin-top: 10px;
+        }
+        /* تنسيقات أعضاء الفريق */
+        .team-member {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        [data-theme="dark"] .team-member {
+            background: #374151;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .member-avatar {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .team-member h4 {
+            color: var(--primary);
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+
+        .member-role {
+            color: var(--warning);
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .member-info {
+            text-align: right;
+            margin: 20px 0;
+            font-size: 0.9em;
+            line-height: 1.8;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .social-btn {
+            padding: 8px 20px;
+            background: var(--primary);
+            color: white;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+
+        .social-btn:hover {
+            background: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        /* تنسيقات المشرفين */
+        .supervisor-card {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid var(--primary);
+        }
+
+        [data-theme="dark"] .supervisor-card {
+            background: #374151;
+        }
+
+        .supervisor-avatar {
+            font-size: 3.5em;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .supervisor-card h4 {
+            color: var(--primary);
+            font-size: 1.4em;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .supervisor-title {
+            text-align: center;
+            color: var(--secondary);
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-size: 1em;
+        }
+
+        .supervisor-info {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            line-height: 2;
+            font-size: 0.9em;
+        }
+
+        [data-theme="dark"] .supervisor-info {
+            background: #1f2937;
+        }
+
+        .expertise {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        [data-theme="dark"] .expertise {
+            background: #1f2937;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 5px 12px;
+            background: var(--primary);
+            color: white;
+            border-radius: 15px;
+            font-size: 0.85em;
+        }
+
+        .info-box {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        [data-theme="dark"] .info-box {
+            background: #374151;
+        }
+
+        .info-box strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            margin: 0;
+        }
+
+        /* نظام التصوير ثلاثي الأبعاد */
+        .d3-viewer-container {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .d3-canvas {
+            width: 100%;
+            height: 600px;
+            background: linear-gradient(to bottom, #87ceeb 0%, #e0f2fe 50%, #f0f0f0 100%);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            perspective: 1200px;
+            border: 3px solid var(--primary);
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] .d3-canvas {
+            background: linear-gradient(to bottom, #0f172a 0%, #1e293b 50%, #334155 100%);
+        }
+
+        .floor-shadow {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 450px;
+            height: 80px;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(20px);
+        }
+
+        .incubator-3d {
+            width: 420px;
+            height: 400px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotateX(20deg) rotateY(0deg);
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .incubator-3d:hover {
+            transform: translate(-50%, -50%) rotateX(20deg) rotateY(25deg);
+        }
+
+        .incubator-base {
+            width: 420px;
+            height: 280px;
+            position: absolute;
+            bottom: 0;
+            background: linear-gradient(145deg, #e8e8e8 0%, #d0d0d0 50%, #b8b8b8 100%);
+            border-radius: 25px;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.4),
+                inset 0 -2px 10px rgba(0,0,0,0.2),
+                inset 0 2px 10px rgba(255,255,255,0.5);
+            border: 5px solid #a0a0a0;
+            transform: translateZ(-20px);
+        }
+
+        [data-theme="dark"] .incubator-base {
+            background: linear-gradient(145deg, #3a3a3a 0%, #2a2a2a 50%, #1a1a1a 100%);
+            border-color: #555;
+        }
+
+        .base-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 60px;
+            background: linear-gradient(to bottom, #2c3e50 0%, #34495e 100%);
+            border-radius: 10px;
+            box-shadow: 
+                0 5px 15px rgba(0,0,0,0.3),
+                inset 0 1px 3px rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 15px;
+        }
+
+        .control-led {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+            animation: blink-led 2s infinite;
+        }
+
+        .led-green { background: #00ff00; color: #00ff00; }
+        .led-yellow { background: #ffff00; color: #ffff00; animation-delay: 0.5s; }
+        .led-blue { background: #0080ff; color: #0080ff; animation-delay: 1s; }
+
+        @keyframes blink-led {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .incubator-dome {
+            width: 400px;
+            height: 220px;
+            position: absolute;
+            top: 30px;
+            left: 10px;
+            background: linear-gradient(
+                to bottom,
+                rgba(180, 220, 255, 0.08) 0%,
+                rgba(180, 220, 255, 0.12) 50%,
+                rgba(180, 220, 255, 0.15) 100%
+            );
+            border-radius: 200px 200px 25px 25px;
+            border: 4px solid rgba(100, 150, 200, 0.4);
+            backdrop-filter: blur(1px);
+            box-shadow: 
+                inset 0 10px 30px rgba(255,255,255,0.3),
+                inset 0 -10px 30px rgba(0,0,0,0.05),
+                0 10px 40px rgba(0,0,0,0.2);
+            transform: translateZ(10px);
+            overflow: visible;
+            z-index: 6;
+        }
+
+        .glass-reflection {
+            position: absolute;
+            top: 10px;
+            left: 30px;
+            width: 150px;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 60%);
+            border-radius: 50%;
+            transform: rotate(-20deg);
+            filter: blur(5px);
+        }
+
+        .glass-reflection-2 {
+            position: absolute;
+            bottom: 20px;
+            right: 40px;
+            width: 100px;
+            height: 80px;
+            background: linear-gradient(225deg, rgba(255,255,255,0.3) 0%, transparent 60%);
+            border-radius: 50%;
+            transform: rotate(15deg);
+            filter: blur(3px);
+        }
+
+        .baby-3d {
+            width: 120px;
+            height: 120px;
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(5px);
+            font-size: 100px;
+            animation: breathe3d 3.5s ease-in-out infinite;
+            filter: drop-shadow(0 8px 15px rgba(0,0,0,0.4));
+            z-index: 5;
+        }
+
+        @keyframes breathe3d {
+            0%, 100% { 
+                transform: translate(-50%, -50%) translateZ(5px) scale(1); 
+            }
+            50% { 
+                transform: translate(-50%, -50%) translateZ(5px) scale(1.03); 
+            }
+        }
+
+        .baby-blanket {
+            position: absolute;
+            top: 65%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 30px;
+            background: linear-gradient(to right, #e3f2fd, #bbdefb, #90caf9);
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 4;
+        }
+
+        .incubator-mattress {
+            position: absolute;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%) translateZ(-5px);
+            width: 340px;
+            height: 120px;
+            background: linear-gradient(to bottom, #fff8e1 0%, #ffecb3 100%);
+            border-radius: 15px;
+            box-shadow: 
+                0 -2px 10px rgba(0,0,0,0.1),
+                inset 0 2px 5px rgba(255,255,255,0.5),
+                inset 0 -2px 5px rgba(0,0,0,0.1);
+            border: 2px solid #ffd54f;
+        }
+
+        .mattress-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 30px,
+                rgba(255,193,7,0.2) 30px,
+                rgba(255,193,7,0.2) 31px
+            );
+        }
+
+        .system-indicator {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: pulse-indicator 2.5s infinite;
+            box-shadow: 
+                0 0 20px rgba(0,0,0,0.4),
+                inset 0 2px 5px rgba(255,255,255,0.3),
+                inset 0 -2px 5px rgba(0,0,0,0.2);
+            border: 3px solid rgba(255,255,255,0.4);
+            transform-style: preserve-3d;
+            z-index: 10;
+            opacity: 0.5;
+        }
+
+        .system-indicator.active-system {
+            opacity: 1;
+            animation: pulse-indicator-active 2s infinite;
+        }
+
+        @keyframes pulse-indicator {
+            0%, 100% { 
+                transform: scale(1) translateZ(15px); 
+                box-shadow: 
+                    0 0 20px rgba(0,0,0,0.4),
+                    0 0 30px currentColor,
+                    inset 0 2px 5px rgba(255,255,255,0.3);
+            }
+            50% { 
+                transform: scale(1.08) translateZ(20px); 
+                box-shadow: 
+                    0 0 30px rgba(0,0,0,0.5),
+                    0 0 50px currentColor,
+                    inset 0 2px 5px rgba(255,255,255,0.3);
+            }
+        }
+
+        @keyframes pulse-indicator-active {
+            0%, 100% { 
+                transform: scale(1) translateZ(15px); 
+                box-shadow: 
+                    0 0 30px rgba(0,0,0,0.5),
+                    0 0 60px currentColor,
+                    inset 0 2px 5px rgba(255,255,255,0.3);
+            }
+            50% { 
+                transform: scale(1.15) translateZ(25px); 
+                box-shadow: 
+                    0 0 40px rgba(0,0,0,0.6),
+                    0 0 80px currentColor,
+                    inset 0 2px 5px rgba(255,255,255,0.3);
+            }
+        }
+
+        .system-indicator:hover {
+            transform: scale(1.4) translateZ(25px) !important;
+            z-index: 20;
+            animation: none;
+        }
+
+        .indicator-heating {
+            background: radial-gradient(circle, #ff6b6b, #ff5252);
+            color: #ff6b6b;
+            top: 68%;
+            left: 8%;
+        }
+
+        .indicator-humidity {
+            background: radial-gradient(circle, #4fc3f7, #29b6f6);
+            color: #4fc3f7;
+            top: 68%;
+            right: 8%;
+        }
+
+        .indicator-oxygen {
+            background: radial-gradient(circle, #81c784, #66bb6a);
+            color: #81c784;
+            top: 25%;
+            left: 12%;
+        }
+
+        .indicator-light-normal {
+            background: radial-gradient(circle, #fff176, #ffeb3b);
+            color: #fff176;
+            top: 8%;
+            left: 50%;
+            transform: translateX(-50%) translateZ(15px);
+        }
+
+        .indicator-light-jaundice {
+            background: radial-gradient(circle, #ffb74d, #ffa726);
+            color: #ffb74d;
+            top: 8%;
+            left: 28%;
+        }
+
+        .indicator-light-uv {
+            background: radial-gradient(circle, #9575cd, #7e57c2);
+            color: #9575cd;
+            top: 8%;
+            right: 28%;
+        }
+
+        .indicator-label {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(30,30,30,0.9));
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .indicator-label::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid rgba(0,0,0,0.9);
+        }
+
+        .system-indicator:hover .indicator-label {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .light-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            border-radius: 200px 200px 25px 25px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            mix-blend-mode: lighten;
+            z-index: 8;
+        }
+
+        .light-effect.active {
+            opacity: 1 !important;
+        }
+
+        .light-normal {
+            background: 
+                radial-gradient(ellipse at 50% 10%, rgba(255, 255, 220, 0.9) 0%, rgba(255, 255, 200, 0.6) 30%, transparent 60%),
+                radial-gradient(ellipse at 50% 30%, rgba(255, 250, 200, 0.5) 0%, transparent 70%);
+            animation: flicker-light 3s ease-in-out infinite;
+        }
+
+        .light-normal.active {
+            box-shadow: 
+                inset 0 0 100px rgba(255, 255, 200, 0.6),
+                0 0 50px rgba(255, 255, 200, 0.4);
+        }
+
+        @keyframes flicker-light {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(0.95); }
+        }
+
+        .light-jaundice {
+            background: 
+                radial-gradient(ellipse at 50% 5%, rgba(255, 200, 0, 1) 0%, rgba(255, 220, 80, 0.8) 25%, rgba(255, 220, 100, 0.6) 40%, transparent 70%),
+                radial-gradient(ellipse at 50% 30%, rgba(255, 180, 0, 0.7) 0%, rgba(255, 200, 50, 0.4) 40%, transparent 60%),
+                radial-gradient(ellipse at 30% 20%, rgba(255, 200, 0, 0.5) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 20%, rgba(255, 200, 0, 0.5) 0%, transparent 50%);
+            animation: pulse-jaundice 2s ease-in-out infinite;
+        }
+
+        .light-jaundice.active {
+            box-shadow: 
+                inset 0 0 120px rgba(255, 200, 0, 0.8),
+                0 0 80px rgba(255, 200, 0, 0.6);
+        }
+
+        @keyframes pulse-jaundice {
+            0%, 100% { filter: brightness(1) saturate(1.2); }
+            50% { filter: brightness(1.1) saturate(1.4); }
+        }
+
+        .light-uv {
+            background: 
+                radial-gradient(ellipse at 50% 5%, rgba(150, 100, 255, 1) 0%, rgba(170, 130, 255, 0.9) 20%, rgba(180, 140, 255, 0.7) 35%, transparent 65%),
+                radial-gradient(ellipse at 50% 25%, rgba(130, 90, 230, 0.8) 0%, rgba(160, 120, 250, 0.5) 35%, transparent 55%),
+                radial-gradient(ellipse at 30% 15%, rgba(150, 100, 255, 0.6) 0%, transparent 40%),
+                radial-gradient(ellipse at 70% 15%, rgba(150, 100, 255, 0.6) 0%, transparent 40%);
+            animation: pulse-uv 1.8s ease-in-out infinite;
+        }
+
+        .light-uv.active {
+            box-shadow: 
+                inset 0 0 150px rgba(150, 100, 255, 0.9),
+                0 0 100px rgba(150, 100, 255, 0.8);
+        }
+
+        @keyframes pulse-uv {
+            0%, 100% { 
+                filter: brightness(1.1) saturate(1.3);
+            }
+            50% { 
+                filter: brightness(1.2) saturate(1.5);
+            }
+        }
+
+        .light-beam {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 60px;
+            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.6));
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .light-effect.active + .light-beam {
+            opacity: 1;
+        }
+
+        .incubator-3d.rotating {
+            animation: rotate3d 15s linear infinite;
+        }
+
+        @keyframes rotate3d {
+            from { transform: translate(-50%, -50%) rotateX(20deg) rotateY(0deg); }
+            to { transform: translate(-50%, -50%) rotateX(20deg) rotateY(360deg); }
+        }
+
+        .view-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .view-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .view-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .view-btn.active {
+            background: var(--success);
+        }
+
+        /* الذكاء الاصطناعي */
+        .ai-model-info {
+            display: grid;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .model-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--light);
+            border-radius: 8px;
+            border-right: 3px solid var(--primary);
+        }
+
+        [data-theme="dark"] .model-stat {
+            background: #374151;
+        }
+
+        .model-label {
+            font-weight: 600;
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+
+        .model-value {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 0.95em;
+        }
+
+        .progress-container {
+            margin: 15px 0;
+        }
+
+        .critical-prediction-card {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        [data-theme="dark"] .critical-prediction-card {
+            background: #374151;
+        }
+
+        .critical-prediction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .risk-meter {
+            width: 100%;
+            height: 30px;
+            background: linear-gradient(to right, 
+                var(--success) 0%, 
+                var(--success) 20%, 
+                var(--warning) 20%, 
+                var(--warning) 50%, 
+                var(--danger) 50%, 
+                var(--danger) 100%);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .risk-meter-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: rgba(255,255,255,0.9);
+            border-radius: 15px;
+            transition: width 1s ease-out;
+            box-shadow: 0 0 10px rgba(255,255,255,0.8);
+        }
+
+        .risk-meter::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.3), transparent);
+            pointer-events: none;
+        }
+
+        .risk-item {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-right: 4px solid;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+
+        .risk-item:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .risk-low {
+            background: rgba(16, 185, 129, 0.1);
+            border-right-color: var(--success);
+        }
+
+        .risk-medium {
+            background: rgba(245, 158, 11, 0.1);
+            border-right-color: var(--warning);
+        }
+
+        .risk-high {
+            background: rgba(239, 68, 68, 0.1);
+            border-right-color: var(--danger);
+        }
+
+        .risk-icon {
+            font-size: 2em;
+            line-height: 1;
+        }
+
+        .risk-content {
+            flex: 1;
+        }
+
+        .risk-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            color: var(--text);
+        }
+
+        .risk-description {
+            font-size: 0.9em;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        .risk-probability {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: right;
+            min-width: 60px;
+        }
+
+        .recommendation-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-radius: 10px;
+            border-right: 4px solid var(--primary);
+            display: flex;
+            gap: 15px;
+        }
+
+        .recommendation-icon {
+            font-size: 2em;
+        }
+
+        .recommendation-content {
+            flex: 1;
+        }
+
+        .recommendation-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--primary);
+            font-size: 1.05em;
+        }
+
+        .recommendation-text {
+            font-size: 0.9em;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .recommendation-priority {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-top: 8px;
+            display: inline-block;
+        }
+
+        .priority-high {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .priority-medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .priority-low {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .warning-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(239, 68, 68, 0.05);
+            border-radius: 10px;
+            border: 2px solid var(--danger);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: warning-pulse 2s infinite;
+        }
+
+        @keyframes warning-pulse {
+            0%, 100% { 
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+            }
+            50% { 
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+        }
+
+        .warning-icon {
+            font-size: 2em;
+            color: var(--danger);
+        }
+
+        .warning-content {
+            flex: 1;
+        }
+
+        .warning-title {
+            font-weight: bold;
+            color: var(--danger);
+            margin-bottom: 5px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1em;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+            background: var(--card-bg);
+            color: var(--text);
+            transition: all 0.3s;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .theme-preview {
+            background: var(--light);
+            border-radius: 12px;
+            margin: 20px 0;
+            padding: 20px;
+            border: 3px dashed var(--primary);
+        }
+
+        [data-theme="dark"] .theme-preview {
+            background: #374151;
+        }
+
+        /* Responsive */
+        @keyframes emergency-flash {
+            0%, 100% { background: var(--bg); }
+            50% { background: rgba(239, 68, 68, 0.2); }
+        }
+
+        @media (max-width: 768px) {
+            .grid, .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .sensor-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .emergency-btn {
+                width: 60px;
+                height: 60px;
+                bottom: 15px;
+                left: 15px;
+            }
+        }
+
+    </style>
+</head>
+<body data-theme="light">
+    <div class="container">
+         <!-- شعار الجامعة ومعلومات المشروع -->
+            <div class="card" style="text-align: center; margin-bottom: 20px;">
+                <div class="university-logo">
+                   <img src="https://i.ibb.co/20dDFyW1/images.jpg" 
+             alt="شعار جامعة مصطفى اسطمبولي - معسكر" 
+             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x150/004d00/ffffff?text=UMAB';"
+             style="width: 150px; 
+                    height: 150px; 
+                    border-radius: 50%; 
+                    margin: 20px auto; 
+                    box-shadow: 0 8px 30px rgba(0,150,255,0.5);
+                    border: 5px solid rgba(255,255,255,0.2);
+                    background: white;
+                    padding: 15px;
+                    object-fit: contain;
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    display: block;"
+             onmouseover="this.style.transform='scale(1.1) rotate(5deg)'; this.style.boxShadow='0 12px 40px rgba(0,150,255,0.7)';"
+             onmouseout="this.style.transform='scale(1) rotate(0deg)'; this.style.boxShadow='0 8px 30px rgba(0,150,255,0.5)';">
+    </div>
+                <h2 style="color: var(--primary); font-size: 1.8em; margin: 15px 0;">جامعة مصطفى اسطمبولي -معسكر</h2>
+                <h3 style="color: var(--secondary); font-size: 1.3em; margin: 10px 0;">Département d'Electrotechnique</h3>
+                <p style="font-size: 1.1em; opacity: 0.8; margin: 10px 0;"> Smart Baby Incubator</p>
+                <p style="font-size: 0.95em; opacity: 0.7;"> génie électronique | Projet de fin d'études 2025-2026</p>
+            </div>
+
+            <!-- أعضاء الفريق -->
+            <div class="card">
+                <h3 class="card-title">👥 فريق المشروع</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    <!-- عضو 1 -->
+                    <div class="team-member">
+                      <img src="https://imgur.com/whd4s8B.jpg" 
+             alt="صورة شخصية" 
+             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x150/004d00/ffffff?text=UMAB';"
+             style="width: 150px; 
+                    height: 150px; 
+                    border-radius: 50%; 
+                    margin: 20px auto; 
+                    box-shadow: 0 8px 30px rgba(0,150,255,0.5);
+                    border: 5px solid rgba(255,255,255,0.2);
+                    background: white;
+                    padding: 15px;
+                    object-fit: contain;
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    display: block;"
+             onmouseover="this.style.transform='scale(1.1) rotate(5deg)'; this.style.boxShadow='0 12px 40px rgba(0,150,255,0.7)';"
+             onmouseout="this.style.transform='scale(1) rotate(0deg)'; this.style.boxShadow='0 8px 30px rgba(0,150,255,0.5)';">
+    
+                        <div class="member-avatar"></div>
+                        <h4>Kada Fatima Zohra</h4>
+                        <p class="member-role">étudiant</p>
+                        <div class="member-info">
+                            <div>📧 <a href="kadafatimazohra71@gmail.com" style="color: var(--primary); text-decoration: none;">kadafatimazohra71@gmail.com</a></div>
+                           <div>📱 <a href="tel:+213 790 687 614 " style="color: var(--primary); text-decoration: none;">+213 790 687 614</a></div>
+                          <a href="https://www.facebook.com/zoo.raa.683731" target="_blank">🔗 Facebook</a> 
+                          <div>🎓 Elétronique Systeme Embarqués</div>
+                        </div>
+                        <div class="social-links">
+                            <a href="https://github.com/kadafatimazohra71-commits" target="_blank" class="social-btn">GitHub</a>
+                        </div>
+                    </div>
+                          
+                        
+                    </div>
+
+                    <!-- عضو 2 -->
+                    <div class="team-member">
+                        <div class="member-avatar"></div>
+                        <img src="https://imgur.com/dRfAwUB.jpg" 
+             alt="صورة شخصية" 
+             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x150/004d00/ffffff?text=UMAB';"
+             style="width: 150px; 
+                    height: 150px; 
+                    border-radius: 50%; 
+                    margin: 20px auto; 
+                    box-shadow: 0 8px 30px rgba(0,150,255,0.5);
+                    border: 5px solid rgba(255,255,255,0.2);
+                    background: white;
+                    padding: 15px;
+                    object-fit: contain;
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    display: block;"
+             onmouseover="this.style.transform='scale(1.1) rotate(5deg)'; this.style.boxShadow='0 12px 40px rgba(0,150,255,0.7)';"
+             onmouseout="this.style.transform='scale(1) rotate(0deg)'; this.style.boxShadow='0 8px 30px rgba(0,150,255,0.5)';">
+    
+                        <h4>Boudjoras Mariem</h4>
+                        <p class="member-role">étudiant</p>
+                        <div class="member-info">
+                          <div>📧 <a href="boudjorameriem@gmail.com" style="color: var(--primary); text-decoration: none;"> boudjorameriem@gmail.com</a></div>
+                             <div>📱 <a href="tel:+213 776 430 771 " style="color: var(--primary); text-decoration: none;">+213 776 430 771</a></div>
+                          <a href="https://www.facebook.com/meriem.boudjoras" target="_blank">🔗 Facebook</a> 
+                          <div>🎓 Elétronique Systeme Embarqués</div>
+                        </div>
+                        <div class="social-links">
+                            <a href="https://github.com/boudjorameriem-commits" target="_blank" class="social-btn">GitHub</a>
+                        </div>
+                    </div>
+                           
+                    </div>
+         <!-- عضو 1 -->
+                    <div class="team-member">
+                        <div class="member-avatar"></div>
+                      <img src="https://imgur.com/UBXZgCX.jpg" 
+             alt="صورة شخصية" 
+             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x150/004d00/ffffff?text=UMAB';"
+             style="width: 150px; 
+                    height: 150px; 
+                    border-radius: 50%; 
+                    margin: 20px auto; 
+                    box-shadow: 0 8px 30px rgba(0,150,255,0.5);
+                    border: 5px solid rgba(255,255,255,0.2);
+                    background: white;
+                    padding: 15px;
+                    object-fit: contain;
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    display: block;"
+             onmouseover="this.style.transform='scale(1.1) rotate(5deg)'; this.style.boxShadow='0 12px 40px rgba(0,150,255,0.7)';"
+             onmouseout="this.style.transform='scale(1) rotate(0deg)'; this.style.boxShadow='0 8px 30px rgba(0,150,255,0.5)';">
+    
+                        
+                        <h4>Mokhefi Kheir Eddine</h4>
+                        <p class="member-role">étudiant</p>
+                        <div class="member-info">
+                            <div>📧 <a href="mailto:kheirdinnemokhfi@gmail.com" style="color: var(--primary); text-decoration: none;">kheirdinnemokhfi@gmail.com</a></div>
+                            <div>📱 <a href="tel:+213 676 941 636" style="color: var(--primary); text-decoration: none;">+213 676 941 636</a></div>
+                           <div>📲 <a href="https://wa.me/213676941636" target="_blank" style="color: #25D366; text-decoration: none;">WhatsApp</a></div>
+                <div>✈️ <a href="https://t.me/+213676941636" target="_blank" style="color: #0088cc; text-decoration: none;">Telegram</a></div>
+                          <a href="https://www.facebook.com/kheiro.dinne" target="_blank">🔗 Facebook</a> 
+                          <div>🎓 L3 Electronique</div>
+                        </div>
+                        <div class="social-links">
+                            <a href="https://www.linkedin.com/in/kheirdinne-mokhfi-5a4b54261" target="_blank" class="social-btn">linkedin</a>
+                            <a href="https://github.com/kheirdinnemokhfi-commits" target="_blank" class="social-btn">GitHub</a>
+                        </div>
+                    </div>
+
+
+                    <!-- عضو 3 -->
+                    <div class="team-member">
+                        <div class="member-avatar"></div>
+                        <img src="https://imgur.com/ywldGVU.jpg" 
+             alt="صورة شخصية" 
+             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x150/004d00/ffffff?text=UMAB';"
+             style="width: 150px; 
+                    height: 150px; 
+                    border-radius: 50%; 
+                    margin: 20px auto; 
+                    box-shadow: 0 8px 30px rgba(0,150,255,0.5);
+                    border: 5px solid rgba(255,255,255,0.2);
+                    background: white;
+                    padding: 15px;
+                    object-fit: contain;
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    display: block;"
+             onmouseover="this.style.transform='scale(1.1) rotate(5deg)'; this.style.boxShadow='0 12px 40px rgba(0,150,255,0.7)';"
+             onmouseout="this.style.transform='scale(1) rotate(0deg)'; this.style.boxShadow='0 8px 30px rgba(0,150,255,0.5)';">
+    
+                        <h4>Chaabane Hibet Rahmane</h4>
+                        <p class="member-role">étudiant</p>
+                        <div class="member-info">
+                          <div>📧 <a href="hibachaabane351@gmail.com" style="color: var(--primary); text-decoration: none;">hibachaabane351@gmail.com</a></div>
+                            <div>📱 <a href="tel:+213 557 139 418 " style="color: var(--primary); text-decoration: none;">+213 557 139 418</a></div>
+                          <div>🎓 Elétronique Systeme Embarqués</div>
+                        </div>
+                        
+                    </div>
+                        
+                    </div>
+                  
+
+                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- الأساتذة المشرفون -->
+            <div class="card">
+                <h3 class="card-title">👨‍🏫 الأساتذة المشرفون</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
+                    <!-- مشرف 1 -->
+                    <div class="supervisor-card">
+                        <div class="supervisor-avatar"></div>
+                      <img src="https://imgur.com/Ydo3qPq.jpg" 
+             alt="صورة شخصية" 
+             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x150/004d00/ffffff?text=UMAB';"
+             style="width: 150px; 
+                    height: 150px; 
+                    border-radius: 50%; 
+                    margin: 20px auto; 
+                    box-shadow: 0 8px 30px rgba(0,150,255,0.5);
+                    border: 5px solid rgba(255,255,255,0.2);
+                    background: white;
+                    padding: 15px;
+                    object-fit: contain;
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    display: block;"
+             onmouseover="this.style.transform='scale(1.1) rotate(5deg)'; this.style.boxShadow='0 12px 40px rgba(0,150,255,0.7)';"
+             onmouseout="this.style.transform='scale(1) rotate(0deg)'; this.style.boxShadow='0 8px 30px rgba(0,150,255,0.5)';">
+    
+                        <h4>Dr.hebali mourad</h4>
+                        <p class="supervisor-title">PhD in Electrical Engineering Professor (Associate)</p>
+                        <div class="supervisor-info">
+                            <div>🏛️ جامعة معسكر للعلوم والتكنولوجيا</div>
+                            <div>📧 <a href="mailto:hebalimourad@yahoo.fr" style="color: var(--primary); text-decoration: none;">hebalimourad@yahoo.fr</a></div>
+                            <div>📧 mourad.hebali@univ-mascara.dz</div>
+                            <div>Grade : Maître Assistant classe B (MCB)                        </div>
+                        <div class="expertise">
+                           <div class="social-links">
+                            <a href="https://www.linkedin.com/in/mourad-hebali-10196675/" target="_blank" class="social-btn">linkedin</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    </div>
+                </div>
+            </div>
+
+        <!-- الهيدر -->
+        <div class="header">
+            <div class="header-left">
+                <span style="font-size: 2.5em;">👶</span>
+                <div>
+                    <h1>حاضنة الأطفال الذكية</h1>
+                    <span style="opacity: 0.7; font-size: 0.9em;">NICU Smart Incubator Pro - نظام حقيقي</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="status-badges">
+                    <span class="badge badge-offline" id="connectionBadge">● غير متصل</span>
+                    <span class="badge" id="statusBadge" style="background: #6b7280; color: white;">⏸ في انتظار البيانات</span>
+                </div>
+                <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            </div>
+        </div>
+
+        <!-- حالة الاتصال الرئيسية -->
+        <div class="connection-status disconnected" id="mainConnectionStatus">
+            <div style="font-size: 3em; margin-bottom: 10px;">📡</div>
+            <h2 style="margin-bottom: 10px; color: var(--danger);">غير متصل بـ Arduino</h2>
+            <p style="opacity: 0.8; margin-bottom: 20px;">
+                النظام يعمل فقط مع البيانات الحقيقية من Arduino.<br>
+                الرجاء الاتصال بجهاز Arduino أولاً من تبويب "Arduino/قاعدة البيانات".
+            </p>
+            <button class="control-btn btn-primary" onclick="switchTab('arduino')" style="max-width: 300px; margin: 0 auto;">
+                <span>🔌</span>
+                الذهاب إلى صفحة الاتصال
+            </button>
+        </div>
+
+       
+
+        <!-- التبويبات -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('monitoring')">📊 المراقبة الحية</button>
+            <button class="tab" onclick="switchTab('control')">⚙️ التحكم والإعدادات</button>
+            <button class="tab" onclick="switchTab('ai')">🤖 الذكاء الاصطناعي الطبي</button>
+            <button class="tab" onclick="switchTab('charts')">📈 الرسوم البيانية</button>
+            <button class="tab" onclick="switchTab('alerts')">🚨 التنبيهات</button>
+            <button class="tab" onclick="switchTab('arduino')">🔌 Arduino/قاعدة البيانات</button>
+            <button class="tab" onclick="switchTab('settings')">🔧 الإعدادات</button>
+        </div>
+
+        <!-- تبويب المراقبة -->
+        <div id="monitoring" class="tab-content active">
+            <div class="grid">
+                 <!-- معلومات المريض -->
+        <div class="patient-info">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2 style="margin: 0;">📋 معلومات المريض</h2>
+                <button id="editPatientBtn" class="control-btn btn-primary" onclick="toggleEditPatient()" style="padding: 8px 16px; font-size: 0.9em;">
+                    <span id="editIcon">✏️</span>
+                    <span id="editText">تعديل</span>
+                </button>
+            </div>
+            <div class="patient-details">
+                <div class="patient-field">
+                    <span class="patient-label">الاسم:</span>
+                    <span class="patient-value" id="patientName">طفل رضيع - 001</span>
+                    <input type="text" id="patientNameEdit" class="patient-edit-input" style="display: none;" value="طفل رضيع - 001">
+                </div>
+                <div class="patient-field">
+                    <span class="patient-label">تاريخ الولادة:</span>
+                    <span class="patient-value" id="patientBirthDate">01/02/2026</span>
+                    <input type="date" id="patientBirthDateEdit" class="patient-edit-input" style="display: none;" value="2026-02-01">
+                </div>
+                <div class="patient-field">
+                    <span class="patient-label">عمر الحمل:</span>
+                    <span class="patient-value" id="patientGestationalAge">32 أسبوع</span>
+                    <input type="text" id="patientGestationalAgeEdit" class="patient-edit-input" style="display: none;" value="32 أسبوع">
+                </div>
+                <div class="patient-field">
+                    <span class="patient-label">مدة الإقامة:</span>
+                    <span class="patient-value" id="patientStayDuration">5 أيام</span>
+                    <input type="text" id="patientStayDurationEdit" class="patient-edit-input" style="display: none;" value="5 أيام">
+                </div>
+                <div class="patient-field">
+                    <span class="patient-label">الوزن الحالي:</span>
+                    <span class="patient-value" id="currentWeight">-- كجم</span>
+                    <input type="text" id="currentWeightEdit" class="patient-edit-input" style="display: none;" value="-- كجم">
+                </div>
+                <div class="patient-field">
+                    <span class="patient-label">آخر تحديث:</span>
+                    <span class="patient-value" id="lastUpdate">--</span>
+                </div>
+            </div>
+        </div>
+                <!-- القراءات الحيوية -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>🫀</span>
+                        المؤشرات الحيوية
+                    </div>
+                    <div class="sensor-grid">
+                        <div class="sensor-item">
+                            <div class="sensor-icon">🌡️</div>
+                            <div class="sensor-value" id="bodyTemp">--</div>
+                            <div class="sensor-label">درجة الحرارة °C</div>
+                            <span class="sensor-status" id="tempStatus">في انتظار البيانات</span>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-icon">❤️</div>
+                            <div class="sensor-value" id="heartRate">--</div>
+                            <div class="sensor-label">نبضات القلب / دقيقة</div>
+                            <span class="sensor-status" id="heartStatus">في انتظار البيانات</span>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-icon">🫁</div>
+                            <div class="sensor-value" id="oxygenLevel">--</div>
+                            <div class="sensor-label">الأكسجين SpO2 %</div>
+                            <span class="sensor-status" id="oxygenStatus">في انتظار البيانات</span>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-icon">🌬️</div>
+                            <div class="sensor-value" id="respRate">--</div>
+                            <div class="sensor-label">معدل التنفس / دقيقة</div>
+                            <span class="sensor-status" id="respStatus">في انتظار البيانات</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- البيئة الداخلية -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>🏠</span>
+                        البيئة الداخلية
+                    </div>
+                    <div class="sensor-grid">
+                        <div class="sensor-item">
+                            <div class="sensor-icon">💧</div>
+                            <div class="sensor-value" id="humidity">--</div>
+                            <div class="sensor-label">الرطوبة %</div>
+                            <span class="sensor-status" id="humidityStatus">في انتظار البيانات</span>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-icon">⚖️</div>
+                            <div class="sensor-value" id="weight">--</div>
+                            <div class="sensor-label">الوزن كجم</div>
+                            <span class="sensor-status" id="weightStatus">في انتظار البيانات</span>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-icon">🌡️</div>
+                            <div class="sensor-value" id="envTemp">--</div>
+                            <div class="sensor-label">حرارة الحاضنة °C</div>
+                            <span class="sensor-status" id="envTempStatus">في انتظار البيانات</span>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-icon">⏱️</div>
+                            <div class="sensor-value" id="dataAge">--</div>
+                            <div class="sensor-label">آخر قراءة</div>
+                            <span class="sensor-status">ثانية</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- العرض المرئي -->
+                <div class="card" style="grid-column: 1 / -1;">
+                    <div class="card-title">
+                        <span>👁️</span>
+                        العرض المرئي للحاضنة
+                    </div>
+                    <div class="incubator-visual">
+                        <div class="incubator-overlay">
+                            <span>🌡️ <strong id="visualTemp">-- °C</strong></span>
+                            <span>💧 <strong id="visualHumidity">-- %</strong></span>
+                            <span>❤️ <strong id="visualHeart">-- bpm</strong></span>
+                            <span>🫁 <strong id="visualOxygen">-- %</strong></span>
+                        </div>
+                        <div class="baby-icon">👶</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- تبويب التحكم -->
+             
+        <div id="control" class="tab-content">
+            <!-- العرض التفاعلي ثلاثي الأبعاد -->
+            <div class="card" style="grid-column: 1 / -1; margin-bottom: 20px;">
+                <div class="card-title">
+                    <span>🎨</span>
+                    العرض التفاعلي ثلاثي الأبعاد - الحاضنة الواقعية
+                </div>
+                <div class="d3-viewer-container">
+                    <div class="d3-canvas" id="d3CanvasControl">
+                        <div class="floor-shadow"></div>
+                        
+                        <div class="incubator-3d" id="incubator3dControl">
+                            <div class="incubator-base">
+                                <div class="base-panel">
+                                    <div class="control-led led-green" id="ledPower"></div>
+                                    <div class="control-led led-yellow" id="ledWarning"></div>
+                                    <div class="control-led led-blue" id="ledSystem"></div>
+                                    <div style="color: white; font-size: 10px; font-weight: bold;">NICU PRO</div>
+                                </div>
+                            </div>
+                            
+                            <div class="incubator-mattress">
+                                <div class="mattress-lines"></div>
+                            </div>
+                            
+                            <div class="baby-blanket"></div>
+                            <div class="baby-3d">👶</div>
+                            
+                            <div class="incubator-dome" id="incubatorDomeControl">
+                                <div class="glass-reflection"></div>
+                                <div class="glass-reflection-2"></div>
+                                
+                                <div class="light-effect light-normal" id="lightNormalControl"></div>
+                                <div class="light-beam"></div>
+                                
+                                <div class="light-effect light-jaundice" id="lightJaundiceControl"></div>
+                                <div class="light-beam"></div>
+                                
+                                <div class="light-effect light-uv" id="lightUVControl"></div>
+                                <div class="light-beam"></div>
+                            </div>
+                            
+                            <div class="system-indicator indicator-heating active-system" id="heatingIndicator">
+                                <span>🔥</span>
+                                <div class="indicator-label">نظام التدفئة</div>
+                            </div>
+                            
+                            <div class="system-indicator indicator-humidity active-system" id="humidityIndicator">
+                                <span>💧</span>
+                                <div class="indicator-label">نظام الترطيب</div>
+                            </div>
+                            
+                            <div class="system-indicator indicator-oxygen active-system" id="oxygenIndicator">
+                                <span>🫁</span>
+                                <div class="indicator-label">إمداد الأكسجين</div>
+                            </div>
+                            
+                            <div class="system-indicator indicator-light-normal active-system" id="normalLightIndicator">
+                                <span>💡</span>
+                                <div class="indicator-label">إضاءة عادية</div>
+                            </div>
+                            
+                            <div class="system-indicator indicator-light-jaundice" id="jaundiceLightIndicator">
+                                <span>🟡</span>
+                                <div class="indicator-label">علاج ضوئي</div>
+                            </div>
+                            
+                            <div class="system-indicator indicator-light-uv" id="uvLightIndicator">
+                                <span>🔵</span>
+                                <div class="indicator-label">تعقيم UV-C</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="view-controls">
+                        <button class="view-btn" onclick="toggleRotationControl()">
+                            <span id="rotationIconControl">🔄</span>
+                            <span id="rotationTextControl">دوران تلقائي</span>
+                        </button>
+                        <button class="view-btn" onclick="resetViewControl()">
+                            <span>🔃</span>
+                            إعادة ضبط العرض
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid">
+                <!-- التدفئة -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>🔥</span>
+                        نظام التدفئة
+                    </div>
+                    <div class="switch-container">
+                        <span><strong>تفعيل التدفئة</strong></span>
+                        <label class="switch">
+                            <input type="checkbox" id="heatingSwitch" disabled>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>درجة الحرارة المستهدفة</span>
+                            <span class="slider-value" id="heatingTempValue">36.5°C</span>
+                        </div>
+                        <input type="range" class="slider" min="32" max="37" step="0.5" value="36.5" 
+                               id="heatingTemp" oninput="updateHeatingTemp(this.value)" disabled>
+                    </div>
+                    <div style="background: #fff3cd; padding: 12px; border-radius: 8px; margin-top: 10px; border-right: 4px solid #ffc107;">
+                        <small style="color: #856404;">
+                            ⚠️ يتطلب اتصال Arduino نشط للتحكم
+                        </small>
+                    </div>
+                </div>
+
+                <!-- الترطيب -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>💦</span>
+                        نظام الترطيب
+                    </div>
+                    <div class="switch-container">
+                        <span><strong>تفعيل الترطيب</strong></span>
+                        <label class="switch">
+                            <input type="checkbox" id="humidifierSwitch" disabled>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>مستوى الرطوبة المستهدف</span>
+                            <span class="slider-value" id="humidityTargetValue">55%</span>
+                        </div>
+                        <input type="range" class="slider" min="40" max="70" step="5" value="55" 
+                               id="humidityTarget" oninput="updateHumidityTarget(this.value)" disabled>
+                    </div>
+                </div>
+
+                <!-- الأكسجين -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>🫁</span>
+                        إمداد الأكسجين
+                    </div>
+                    <div class="switch-container">
+                        <span><strong>تفعيل الأكسجين</strong></span>
+                        <label class="switch">
+                            <input type="checkbox" id="oxygenSwitch" disabled>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>تركيز الأكسجين</span>
+                            <span class="slider-value" id="oxygenLevelValue">30%</span>
+                        </div>
+                        <input type="range" class="slider" min="21" max="100" step="1" value="30" 
+                               id="oxygenLevelControl" oninput="updateOxygenLevel(this.value)" disabled>
+                    </div>
+                </div>
+
+                <!-- الإضاءة العادية -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>💡</span>
+                        الإضاءة العادية
+                    </div>
+                    <div class="switch-container">
+                        <span><strong>تفعيل الإضاءة</strong></span>
+                        <label class="switch">
+                            <input type="checkbox" checked id="normalLightSwitch" onchange="toggleNormalLight(this.checked)" disabled>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>شدة الإضاءة</span>
+                            <span class="slider-value" id="normalLightValue">50%</span>
+                        </div>
+                        <input type="range" class="slider" min="0" max="100" step="10" value="50" 
+                               id="normalLightIntensity" oninput="updateNormalLightIntensity(this.value)" disabled>
+                    </div>
+                    <div style="background: #fff9e6; padding: 12px; border-radius: 8px; margin-top: 10px; border-right: 4px solid #ffc107;">
+                        <small style="color: #856404;">
+                            💡 <strong>معلومة:</strong> إضاءة LED بيضاء دافئة لتوفير بيئة مريحة للطفل.
+                        </small>
+                    </div>
+                </div>
+
+                <!-- العلاج الضوئي لليرقان -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>🟡</span>
+                        العلاج الضوئي (اليرقان/الصفار)
+                    </div>
+                    <div class="switch-container">
+                        <span><strong>تفعيل الضوء الأصفر</strong></span>
+                        <label class="switch">
+                            <input type="checkbox" id="jaundiceSwitch" onchange="toggleJaundiceLight(this.checked)" disabled>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>شدة الضوء الأصفر (450-470 nm)</span>
+                            <span class="slider-value" id="jaundiceLightValue">60%</span>
+                        </div>
+                        <input type="range" class="slider" min="0" max="100" step="10" value="60" 
+                               id="jaundiceLightIntensity" oninput="updateJaundiceLightIntensity(this.value)" disabled>
+                    </div>
+                    <div style="background: #fff3cd; padding: 12px; border-radius: 8px; margin-top: 10px; border-right: 4px solid #ffc107;">
+                        <small style="color: #856404;">
+                            ⚠️ <strong>تنبيه طبي:</strong> يستخدم لعلاج اليرقان الوليدي. الطول الموجي 450-470nm.
+                        </small>
+                    </div>
+                </div>
+
+                <!-- تعقيم UV-C -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>🔵</span>
+                        تعقيم UV-C (الأشعة فوق البنفسجية)
+                    </div>
+                    <div class="switch-container">
+                        <span><strong>تفعيل التعقيم</strong></span>
+                        <label class="switch">
+                            <input type="checkbox" id="uvSwitch" onchange="toggleUVSterilization(this.checked)" disabled>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>مدة التعقيم (دقائق)</span>
+                            <span class="slider-value" id="uvDurationValue">15 د</span>
+                        </div>
+                        <input type="range" class="slider" min="5" max="60" step="5" value="15" 
+                               id="uvDuration" oninput="updateUVDuration(this.value)" disabled>
+                    </div>
+                    <div style="background: #ffebee; padding: 12px; border-radius: 8px; margin-top: 10px; border-right: 4px solid #ef4444;">
+                        <small style="color: #c62828;">
+                            ⚠️ <strong>تحذير أمان حرج:</strong> يجب إخلاء الحاضنة تماماً أثناء التعقيم! الأشعة UV-C (254nm) خطرة جداً.
+                        </small>
+                    </div>
+                </div>
+
+                <!-- أزرار التحكم السريع -->
+                <div class="card" style="grid-column: 1 / -1;">
+                    <div class="card-title">
+                        <span>⚡</span>
+                        التحكم السريع
+                    </div>
+                    <div class="control-buttons">
+                        <button class="control-btn btn-success" onclick="quickPreset('normal')" disabled id="btnNormal">
+                            <span>✓</span>
+                            وضع عادي
+                        </button>
+                        <button class="control-btn btn-primary" onclick="quickPreset('intensive')" disabled id="btnIntensive">
+                            <span>⚡</span>
+                            وضع مكثف
+                        </button>
+                        <button class="control-btn btn-warning" onclick="quickPreset('phototherapy')" disabled id="btnPhoto">
+                            <span>💡</span>
+                            علاج ضوئي
+                        </button>
+                        <button class="control-btn btn-danger" onclick="emergencyStop()" disabled id="btnEmergency">
+                            <span>⏸️</span>
+                            إيقاف الطوارئ
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- تبويب الذكاء الاصطناعي الطبي -->
+        <div id="ai" class="tab-content">
+            <div class="card" style="grid-column: 1 / -1; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;">
+                <div class="card-title" style="color: white; border-bottom-color: rgba(255,255,255,0.3);">
+                    <span>🧠</span>
+                    نظام الذكاء الاصطناعي للتنبؤ بالمخاطر الطبية
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+                    <div style="text-align: center; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px; backdrop-filter: blur(10px);">
+                        <div style="font-size: 2.5em; margin-bottom: 5px;" id="aiHealthScore">--</div>
+                        <div style="font-size: 0.9em; opacity: 0.9;">درجة الصحة العامة</div>
+                        <div style="font-size: 0.75em; margin-top: 5px; opacity: 0.7;">من 100</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px; backdrop-filter: blur(10px);">
+                        <div style="font-size: 2.5em; margin-bottom: 5px;" id="aiRiskLevel">--</div>
+                        <div style="font-size: 0.9em; opacity: 0.9;">مستوى الخطورة</div>
+                        <div style="font-size: 0.75em; margin-top: 5px; opacity: 0.7;">تحليل فوري</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px; backdrop-filter: blur(10px);">
+                        <div style="font-size: 2.5em; margin-bottom: 5px;" id="aiAccuracy">98%</div>
+                        <div style="font-size: 0.9em; opacity: 0.9;">دقة النموذج</div>
+                        <div style="font-size: 0.75em; margin-top: 5px; opacity: 0.7;">معتمد طبياً</div>
+                    </div>
+                </div>
+                <button class="control-btn btn-success" onclick="runAIAnalysis()" style="margin-top: 20px; width: 100%;" disabled id="btnAIAnalysis">
+                    <span>🔬</span>
+                    تشغيل التحليل الشامل الآن
+                </button>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">
+                        <span>⚠️</span>
+                        التنبؤ بالمخاطر المحتملة
+                    </div>
+                    <div id="aiRiskPredictions">
+                        <p style="text-align: center; opacity: 0.6; padding: 20px;">يتطلب بيانات من Arduino</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <span>💡</span>
+                        توصيات الذكاء الاصطناعي
+                    </div>
+                    <div id="aiRecommendations">
+                        <p style="text-align: center; opacity: 0.6; padding: 20px;">يتطلب بيانات من Arduino</p>
+                    </div>
+                </div>
+
+                <div class="card" style="grid-column: 1 / -1;">
+                    <div class="card-title">
+                        <span>🔴</span>
+                        التنبؤ بالحالات الحرجة
+                    </div>
+                    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                        <div class="critical-prediction-card">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                                <div style="font-size: 2em;">🦠</div>
+                                <div>
+                                    <div style="font-weight: bold; font-size: 1.1em;">تعفن الدم (Sepsis)</div>
+                                    <div style="font-size: 0.85em; opacity: 0.7;">احتمالية خلال 24 ساعة</div>
+                                </div>
+                            </div>
+                            <div class="risk-meter">
+                                <div class="risk-meter-bar" id="sepsisRisk" style="width: 0%;"></div>
+                            </div>
+                            <div style="text-align: center; margin-top: 10px; font-size: 1.5em; font-weight: bold; color: var(--success);" id="sepsisPercent">--%</div>
+                        </div>
+
+                        <div class="critical-prediction-card">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                                <div style="font-size: 2em;">🫃</div>
+                                <div>
+                                    <div style="font-weight: bold; font-size: 1.1em;">التهاب الأمعاء (NEC)</div>
+                                    <div style="font-size: 0.85em; opacity: 0.7;">احتمالية خلال 48 ساعة</div>
+                                </div>
+                            </div>
+                            <div class="risk-meter">
+                                <div class="risk-meter-bar" id="necRisk" style="width: 0%;"></div>
+                            </div>
+                            <div style="text-align: center; margin-top: 10px; font-size: 1.5em; font-weight: bold; color: var(--success);" id="necPercent">--%</div>
+                        </div>
+
+                        <div class="critical-prediction-card">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                                <div style="font-size: 2em;">🫁</div>
+                                <div>
+                                    <div style="font-weight: bold; font-size: 1.1em;">الضائقة التنفسية (RDS)</div>
+                                    <div style="font-size: 0.85em; opacity: 0.7;">مستوى الخطورة الحالي</div>
+                                </div>
+                            </div>
+                            <div class="risk-meter">
+                                <div class="risk-meter-bar" id="rdsRisk" style="width: 0%;"></div>
+                            </div>
+                            <div style="text-align: center; margin-top: 10px; font-size: 1.5em; font-weight: bold; color: var(--success);" id="rdsPercent">--%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- مربع الدردشة مع AI المساعد الطبي -->
+                <div class="card" style="grid-column: 1 / -1;">
+                    <div class="ai-chat-container">
+                        <div class="ai-chat-header">
+                            <span style="font-size: 2em;">🤖</span>
+                            <div>
+                                <h3>المساعد الطبي الذكي</h3>
+                                <p style="margin: 0; font-size: 0.85em; opacity: 0.9;">مدعوم بـ Claude AI - متخصص في رعاية الأطفال الخدج</p>
+                            </div>
+                            <div class="ai-status">
+                                <div class="ai-status-dot"></div>
+                                <span>متصل</span>
+                            </div>
+                        </div>
+
+                        <div class="ai-suggestions">
+                            <div class="ai-suggestion-chip" onclick="sendSuggestion('ما هي القراءات الطبيعية للطفل الخديج؟')">
+                                📊 القراءات الطبيعية
+                            </div>
+                            <div class="ai-suggestion-chip" onclick="sendSuggestion('كيف أتعامل مع انخفاض نسبة الأكسجين؟')">
+                                🫁 انخفاض الأكسجين
+                            </div>
+                            <div class="ai-suggestion-chip" onclick="sendSuggestion('ما أعراض اليرقان الوليدي؟')">
+                                💛 اليرقان الوليدي
+                            </div>
+                            <div class="ai-suggestion-chip" onclick="sendSuggestion('نصائح للحفاظ على درجة الحرارة')">
+                                🌡️ درجة الحرارة
+                            </div>
+                        </div>
+
+                        <div class="ai-chat-messages" id="aiChatMessages">
+                            <div class="ai-message ai">
+                                <div class="ai-avatar">🤖</div>
+                                <div>
+                                    <div class="ai-message-content">
+                                        مرحباً! أنا المساعد الطبي الذكي المتخصص في رعاية الأطفال الخدج. 👶<br><br>
+                                        يمكنني مساعدتك في:<br>
+                                        • فهم القراءات الطبية الحيوية<br>
+                                        • تقديم نصائح طبية متخصصة<br>
+                                        • الإجابة على استفساراتك الطبية<br>
+                                        • تحليل حالة الطفل والتوصيات<br><br>
+                                        كيف يمكنني مساعدتك اليوم؟
+                                    </div>
+                                    <div class="ai-message-time">الآن</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ai-typing" id="aiTyping">
+                            <div class="ai-avatar" style="background: linear-gradient(135deg, var(--primary), var(--secondary));">🤖</div>
+                            <div class="ai-typing-dots">
+                                <div class="ai-typing-dot"></div>
+                                <div class="ai-typing-dot"></div>
+                                <div class="ai-typing-dot"></div>
+                            </div>
+                        </div>
+
+                        <div class="ai-chat-input-container">
+                            <textarea 
+                                class="ai-chat-input" 
+                                id="aiChatInput" 
+                                placeholder="اكتب سؤالك الطبي هنا... (مثال: ما هي أعراض الضائقة التنفسية؟)"
+                                rows="1"
+                                onkeydown="handleChatKeydown(event)"
+                            ></textarea>
+                            <button class="ai-send-btn" onclick="sendAIMessage()" id="aiSendBtn">
+                                ➤
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- تبويب الرسوم البيانية -->
+        <div id="charts" class="tab-content">
+            <div class="grid grid-2">
+                <div class="card">
+                    <div class="card-title">
+                        <span>📈</span>
+                        درجة الحرارة (آخر ساعة)
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="tempChart"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">
+                        <span>📈</span>
+                        نبضات القلب (آخر ساعة)
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="heartChart"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">
+                        <span>📈</span>
+                        الأكسجين (آخر ساعة)
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="oxygenChart"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">
+                        <span>📈</span>
+                        الرطوبة (آخر ساعة)
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="humidityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- تبويب التنبيهات -->
+        <div id="alerts" class="tab-content">
+            <div class="grid">
+                <div class="card" style="grid-column: 1 / -1;">
+                    <div class="card-title">
+                        <span>🔔</span>
+                        سجل التنبيهات
+                    </div>
+                    <div class="alerts-list" id="alertsList">
+                        <div class="alert-item alert-info">
+                            <div class="alert-icon">ℹ️</div>
+                            <div class="alert-content">
+                                <strong>النظام جاهز:</strong> في انتظار اتصال Arduino
+                            </div>
+                            <div class="alert-time">الآن</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- تبويب Arduino وقاعدة البيانات -->
+        <div id="arduino" class="tab-content">
+            <!-- اتصال Arduino -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <div class="card-title">
+                    <span>📡</span>
+                    اتصال Arduino WiFi
+                </div>
+                <div class="connection-panel">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3>حالة الاتصال:</h3>
+                        <span class="status-indicator status-disconnected" id="arduinoStatus">
+                            <span class="status-dot-animated"></span>
+                            غير متصل
+                        </span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>عنوان IP لـ Arduino:</label>
+                        <input type="text" class="form-input" id="arduinoIP" placeholder="192.168.1.100" value="192.168.1.100">
+                        <small style="opacity: 0.7; display: block; margin-top: 5px;">
+                            💡 ستحصل على هذا العنوان من Serial Monitor بعد رفع الكود على Arduino
+                        </small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>المنفذ (Port):</label>
+                        <input type="text" class="form-input" id="arduinoPort" placeholder="80" value="80">
+                    </div>
+
+                    <div class="form-group">
+                        <label>معدل القراءة (ميلي ثانية):</label>
+                        <input type="number" class="form-input" id="readInterval" placeholder="1000" value="1000" min="500" max="5000">
+                        <small style="opacity: 0.7; display: block; margin-top: 5px;">
+                            💡 1000ms = ثانية واحدة (موصى به)
+                        </small>
+                    </div>
+                    
+                    <div class="control-buttons" style="grid-template-columns: 1fr 1fr;">
+                        <button class="control-btn btn-success" onclick="connectArduino()" id="btnConnect">
+                            <span>🔗</span>
+                            اتصال
+                        </button>
+                        <button class="control-btn btn-danger" onclick="disconnectArduino()" disabled id="btnDisconnect">
+                            <span>✖️</span>
+                            قطع الاتصال
+                        </button>
+                    </div>
+                    
+                    <div class="last-sync" id="arduinoLastSync">
+                        آخر مزامنة: لم يتم الاتصال بعد
+                    </div>
+                </div>
+
+                <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; margin-top: 20px; border-right: 4px solid #2196f3;">
+                    <h3 style="color: #1565c0; margin-bottom: 15px;">📋 خطوات الإعداد:</h3>
+                    <ol style="color: #1565c0; line-height: 2; margin-right: 20px;">
+                        <li>قم برفع كود Arduino على لوحة Arduino Uno R3 WiFi</li>
+                        <li>افتح Serial Monitor وانتظر حتى يتصل Arduino بشبكة WiFi</li>
+                        <li>انسخ عنوان IP الذي يظهر في Serial Monitor</li>
+                        <li>الصق عنوان IP في الحقل أعلاه واضغط "اتصال"</li>
+                        <li>سيبدأ النظام بعرض البيانات الحقيقية من Arduino</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- تبويب الإعدادات -->
+        <div id="settings" class="tab-content">
+            <div class="grid">
+                <!-- الثيمات -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>🎨</span>
+                        الثيمات (المظهر)
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">اختر الثيم:</label>
+                        <select class="form-select" id="themeSelect" onchange="applyTheme()">
+                            <option value="light">☀️ فاتح (Light)</option>
+                            <option value="dark">🌙 داكن (Dark)</option>
+                            <option value="blue">💙 أزرق (Blue)</option>
+                            <option value="green">💚 أخضر (Green)</option>
+                            <option value="purple">💜 بنفسجي (Purple)</option>
+                            <option value="orange">🧡 برتقالي (Orange)</option>
+                        </select>
+                    </div>
+
+                    <div class="theme-preview" id="themePreview">
+                        <div style="text-align: center; padding: 20px;">
+                            <div style="font-size: 3em; margin-bottom: 10px;">🎨</div>
+                            <div>معاينة الثيم المختار</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- حدود التنبيه -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>⚙️</span>
+                        حدود التنبيه
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>حد الحرارة الأدنى</span>
+                            <span class="slider-value" id="tempMinValue">36.0°C</span>
+                        </div>
+                        <input type="range" class="slider" min="35" max="37" step="0.5" value="36" 
+                               id="tempMin" oninput="updateTempMin(this.value)">
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>حد الحرارة الأعلى</span>
+                            <span class="slider-value" id="tempMaxValue">37.5°C</span>
+                        </div>
+                        <input type="range" class="slider" min="37" max="39" step="0.5" value="37.5" 
+                               id="tempMax" oninput="updateTempMax(this.value)">
+                    </div>
+                </div>
+
+                <!-- حفظ البيانات -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>💾</span>
+                        حفظ البيانات
+                    </div>
+                    <div class="control-buttons" style="grid-template-columns: 1fr;">
+                        <button class="control-btn btn-primary" onclick="exportData()">
+                            <span>📥</span>
+                            تصدير البيانات
+                        </button>
+                        <button class="control-btn btn-success" onclick="saveSettings()">
+                            <span>💾</span>
+                            حفظ الإعدادات
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- زر الطوارئ -->
+    <button class="emergency-btn" onclick="emergencyAlert()" id="emergencyButton" disabled>
+        <span class="emergency-icon">🚨</span>
+        <span style="font-size: 0.8em;">طوارئ</span>
+    </button>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // ============================================
+        // 🔌 إعدادات الاتصال (مماثلة لـ index.html)
+        // ============================================
+        
+        let WEMOS_IP = '192.168.43.251';
+        let ws = null;
+        let recognition = null;
+        let currentLang = 'ar';
+        let voiceLang = 'ar-SA';
+        let savedSettings = {
+            theme: 'light',
+            advancedSettings: {}
+        };
+
+        // إعدادات النظام
+        let charts = {};
+        let isConnected = false;
+        let arduinoDataInterval = null;
+        let chartDataHistory = {
+            temperature: [],
+            heartRate: [],
+            oxygen: [],
+            humidity: [],
+            timestamps: []
+        };
+        let lastDataTime = null;
+        let isRotatingControl = false;
+        let currentZoom = 1;
+
+        // متغيرات الذكاء الاصطناعي
+        let aiModel = {
+            healthScore: 0,
+            riskLevel: '--',
+            predictions: [],
+            recommendations: [],
+            criticalRisks: {
+                sepsis: 0,
+                nec: 0,
+                rds: 0
+            }
+        };
+
+        // ============================================
+        // 📡 الاتصال بـ Arduino
+        // ============================================
+
+        async function connectArduino() {
+            const ip = document.getElementById('arduinoIP').value;
+            const port = document.getElementById('arduinoPort').value;
+            
+            // حفظ IP في المتغير العام و localStorage
+            WEMOS_IP = ip;
+            localStorage.setItem('wemosIP', ip);
+            
+            if (!ip) {
+                addAlert('⚠️ الرجاء إدخال عنوان IP لـ Arduino', 'warning');
+                return;
+            }
+
+            document.getElementById('btnConnect').disabled = true;
+            document.getElementById('btnConnect').innerHTML = '<span>⏳</span> جاري الاتصال...';
+            
+            try {
+                const response = await fetch(`http://${ip}:${port}/api/status`, {
+                    method: 'GET',
+                    signal: AbortSignal.timeout(10000)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('✅ Arduino متصل:', data);
+                
+                isConnected = true;
+                
+                // تحديث واجهة الاتصال
+                document.getElementById('arduinoStatus').innerHTML = '<span class="status-dot-animated"></span> متصل';
+                document.getElementById('arduinoStatus').className = 'status-indicator status-connected';
+                document.getElementById('connectionBadge').textContent = '● متصل';
+                document.getElementById('connectionBadge').className = 'badge badge-online';
+                document.getElementById('statusBadge').textContent = '✓ يستقبل البيانات';
+                document.getElementById('statusBadge').style.background = '#10b981';
+                
+                // تحديث حالة الاتصال الرئيسية
+                const mainStatus = document.getElementById('mainConnectionStatus');
+                mainStatus.className = 'connection-status connected';
+                mainStatus.innerHTML = `
+                    <div style="font-size: 3em; margin-bottom: 10px;">✅</div>
+                    <h2 style="margin-bottom: 10px; color: var(--success);">متصل بـ Arduino بنجاح</h2>
+                    <p style="opacity: 0.8;">
+                        يتم استقبال البيانات الحقيقية من المستشعرات.<br>
+                        IP: ${ip}:${port}
+                    </p>
+                `;
+                
+                // تفعيل أزرار التحكم
+                enableControlButtons();
+                
+                // تحديث البيانات الأولية
+                updateFromArduino(data);
+                
+                // بدء القراءة الدورية
+                startArduinoPolling(ip, port);
+                
+                // إعداد WebSocket (مثل index.html)
+                setupWebSocket(ip, port);
+                
+                addAlert('تم الاتصال بـ Arduino بنجاح - البيانات الحقيقية تُستقبل الآن', 'success');
+                
+                // تحديث أزرار الاتصال
+                document.getElementById('btnConnect').disabled = true;
+                document.getElementById('btnConnect').innerHTML = '<span>✓</span> متصل';
+                document.getElementById('btnDisconnect').disabled = false;
+                
+            } catch (error) {
+                console.error('❌ فشل الاتصال بـ Arduino:', error);
+                
+                isConnected = false;
+                
+                document.getElementById('arduinoStatus').innerHTML = '<span class="status-dot-animated"></span> غير متصل';
+                document.getElementById('arduinoStatus').className = 'status-indicator status-disconnected';
+                document.getElementById('connectionBadge').textContent = '● فشل الاتصال';
+                document.getElementById('connectionBadge').className = 'badge badge-critical';
+                
+                addAlert(`فشل الاتصال بـ Arduino: ${error.message}`, 'danger');
+                
+                document.getElementById('btnConnect').disabled = false;
+                document.getElementById('btnConnect').innerHTML = '<span>🔗</span> اتصال';
+                
+                addAlert(`❌ فشل الاتصال بـ Arduino: ${error.message}.\nالرجاء التحقق من اتصال Arduino بالشبكة، وصحة عنوان IP، وتشغيل الجهاز، وغياب جدار ناري.`, 'danger');
+            }
+        }
+
+        function disconnectArduino() {
+            stopArduinoConnection();
+            
+            // إغلاق WebSocket
+            if (ws) {
+                ws.close();
+                ws = null;
+            }
+            
+            isConnected = false;
+            
+            document.getElementById('arduinoStatus').innerHTML = '<span class="status-dot-animated"></span> غير متصل';
+            document.getElementById('arduinoStatus').className = 'status-indicator status-disconnected';
+            document.getElementById('connectionBadge').textContent = '● غير متصل';
+            document.getElementById('connectionBadge').className = 'badge badge-offline';
+            document.getElementById('statusBadge').textContent = '⏸ منقطع';
+            document.getElementById('statusBadge').style.background = '#6b7280';
+            
+            // تحديث حالة الاتصال الرئيسية
+            const mainStatus = document.getElementById('mainConnectionStatus');
+            mainStatus.className = 'connection-status disconnected';
+            mainStatus.innerHTML = `
+                <div style="font-size: 3em; margin-bottom: 10px;">📡</div>
+                <h2 style="margin-bottom: 10px; color: var(--danger);">تم قطع الاتصال</h2>
+                <p style="opacity: 0.8; margin-bottom: 20px;">
+                    تم قطع الاتصال بـ Arduino.<br>
+                    اضغط "اتصال" لإعادة الاتصال.
+                </p>
+                <button class="control-btn btn-primary" onclick="connectArduino()" style="max-width: 300px; margin: 0 auto;">
+                    <span>🔗</span>
+                    إعادة الاتصال
+                </button>
+            `;
+            
+            // تعطيل أزرار التحكم
+            disableControlButtons();
+            
+            // مسح البيانات
+            clearSensorDisplays();
+            
+            addAlert('تم قطع الاتصال بـ Arduino', 'warning');
+            
+            document.getElementById('btnConnect').disabled = false;
+            document.getElementById('btnConnect').innerHTML = '<span>🔗</span> اتصال';
+            document.getElementById('btnDisconnect').disabled = true;
+        }
+
+        function startArduinoPolling(ip, port) {
+            stopArduinoConnection();
+            
+            const interval = parseInt(document.getElementById('readInterval')?.value || 1000);
+            
+            arduinoDataInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`http://${ip}:${port}/api/status`, {
+                        signal: AbortSignal.timeout(3000)
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        updateFromArduino(data);
+                        
+                        document.getElementById('arduinoLastSync').textContent = 
+                            'آخر مزامنة: ' + new Date().toLocaleTimeString('ar');
+                    } else {
+                        throw new Error('فشل الحصول على البيانات');
+                    }
+                } catch (error) {
+                    console.error('خطأ في القراءة:', error);
+                    addAlert(`خطأ في استقبال البيانات: ${error.message}`, 'warning');
+                }
+            }, interval);
+        }
+
+        function stopArduinoConnection() {
+            if (arduinoDataInterval) {
+                clearInterval(arduinoDataInterval);
+                arduinoDataInterval = null;
+            }
+        }
+
+        // ============================================
+        // 🔌 دوال الاتصال الإضافية (من index.html)
+        // ============================================
+
+        // دالة الاتصال بالجهاز (WEMOS)
+        function connect() {
+            fetch(`http://${WEMOS_IP}/api/status`)
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('connectionBadge').textContent = 'متصل ✓';
+                    document.getElementById('connectionBadge').className = 'badge badge-online';
+                    if (document.getElementById('ipDisplay')) {
+                        document.getElementById('ipDisplay').textContent = `IP: ${WEMOS_IP}`;
+                    }
+                    setupWebSocket();
+                    loadAllData();
+                })
+                .catch(e => {
+                    document.getElementById('connectionBadge').textContent = 'غير متصل ✗';
+                    document.getElementById('connectionBadge').className = 'badge badge-offline';
+                    console.error('فشل الاتصال:', e);
+                });
+        }
+
+        // إعداد WebSocket
+        function setupWebSocket(ip, port) {
+            if (ws) ws.close();
+            
+            // محاولة الاتصال بـ WebSocket على منفذ 81 (كما في index.html)
+            const wsPort = 81;
+            const wsUrl = `ws://${ip}:${wsPort}`;
+            
+            try {
+                ws = new WebSocket(wsUrl);
+                
+                ws.onopen = () => {
+                    console.log('✅ WebSocket متصل على:', wsUrl);
+                };
+                
+                ws.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        console.log('📨 WebSocket data:', data);
+                        
+                        // تحديث البيانات من WebSocket
+                        if (data.type === 'sensors') {
+                            updateFromArduino(data);
+                        } else if (data.type === 'log') {
+                            addAlert(data.event || data.message, data.level || 'info');
+                        } else {
+                            // تحديث عام للبيانات
+                            updateFromArduino(data);
+                        }
+                    } catch (e) {
+                        console.error('خطأ في معالجة بيانات WebSocket:', e);
+                    }
+                };
+                
+                ws.onerror = (error) => {
+                    console.warn('تحذير WebSocket:', error);
+                    console.log('💡 WebSocket غير متاح، سيتم الاعتماد على القراءة الدورية فقط');
+                };
+                
+                ws.onclose = () => {
+                    console.log('❌ WebSocket مغلق');
+                    // محاولة إعادة الاتصال إذا كان الجهاز لا يزال متصلاً
+                    setTimeout(() => {
+                        if (isConnected && document.getElementById('connectionBadge').classList.contains('badge-online')) {
+                            console.log('🔄 محاولة إعادة اتصال WebSocket...');
+                            setupWebSocket(ip, port);
+                        }
+                    }, 5000);
+                };
+            } catch (e) {
+                console.error('خطأ في إنشاء WebSocket:', e);
+                console.log('💡 سيتم الاعتماد على القراءة الدورية فقط');
+            }
+        }
+
+        // حفظ عنوان IP
+        function saveIP() {
+            WEMOS_IP = document.getElementById('wemosIP')?.value || document.getElementById('arduinoIP')?.value;
+            localStorage.setItem('wemosIP', WEMOS_IP);
+            alert('✅ تم حفظ عنوان IP');
+            location.reload();
+        }
+
+        // تحميل جميع البيانات
+        function loadAllData() {
+            // يمكن إضافة وظائف تحميل إضافية هنا إذا لزم الأمر
+            console.log('📥 تحميل جميع البيانات...');
+        }
+
+        // استعادة IP المحفوظ عند التحميل
+        function initConnection() {
+            const savedIP = localStorage.getItem('wemosIP');
+            if (savedIP) {
+                WEMOS_IP = savedIP;
+                if (document.getElementById('arduinoIP')) {
+                    document.getElementById('arduinoIP').value = WEMOS_IP;
+                }
+                if (document.getElementById('wemosIP')) {
+                    document.getElementById('wemosIP').value = WEMOS_IP;
+                }
+            }
+        }
+
+
+        function updateFromArduino(data) {
+            console.log('📊 بيانات من Arduino:', data);
+            lastDataTime = Date.now();
+            
+            // تحديث المؤشرات الحيوية
+            if (data.temperature !== undefined) {
+                updateSensorValue('bodyTemp', data.temperature.toFixed(1), checkTemp(data.temperature));
+                updateSensorValue('envTemp', data.temperature.toFixed(1), checkTemp(data.temperature));
+                updateSensorValue('visualTemp', data.temperature.toFixed(1) + '°C');
+                addToChart('temperature', data.temperature);
+            }
+            
+            if (data.humidity !== undefined) {
+                updateSensorValue('humidity', Math.round(data.humidity), checkHumidity(data.humidity));
+                updateSensorValue('visualHumidity', Math.round(data.humidity) + '%');
+                addToChart('humidity', data.humidity);
+            }
+            
+            if (data.heartRate !== undefined && data.heartRate > 0) {
+                updateSensorValue('heartRate', Math.round(data.heartRate), checkHeartRate(data.heartRate));
+                updateSensorValue('visualHeart', Math.round(data.heartRate) + ' bpm');
+                addToChart('heartRate', data.heartRate);
+            }
+            
+            if (data.oxygenLevel !== undefined) {
+                updateSensorValue('oxygenLevel', Math.round(data.oxygenLevel), checkOxygen(data.oxygenLevel));
+                updateSensorValue('visualOxygen', Math.round(data.oxygenLevel) + '%');
+                addToChart('oxygen', data.oxygenLevel);
+            }
+            
+            if (data.respRate !== undefined) {
+                updateSensorValue('respRate', Math.round(data.respRate), checkRespiration(data.respRate));
+            }
+            
+            if (data.weight !== undefined) {
+                updateSensorValue('weight', data.weight.toFixed(1), 'ok');
+                updateSensorValue('currentWeight', data.weight.toFixed(1) + ' كجم');
+            }
+            
+            // تحديث عمر البيانات
+            updateDataAge();
+            
+            // تحديث تلقائي للذكاء الاصطناعي
+            if (Math.random() > 0.7) {
+                calculateHealthScore();
+            }
+        }
+
+        function updateSensorValue(id, value, status) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = value;
+            }
+            
+            if (status) {
+                const statusElement = document.getElementById(id + 'Status');
+                if (statusElement) {
+                    if (status === 'ok') {
+                        statusElement.textContent = 'طبيعي';
+                        statusElement.className = 'sensor-status status-ok';
+                    } else {
+                        statusElement.textContent = status;
+                        statusElement.className = 'sensor-status status-alert';
+                    }
+                }
+            }
+        }
+
+        function clearSensorDisplays() {
+            const sensors = ['bodyTemp', 'heartRate', 'oxygenLevel', 'respRate', 'humidity', 'weight', 'envTemp'];
+            sensors.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) element.textContent = '--';
+                
+                const statusElement = document.getElementById(id + 'Status');
+                if (statusElement) {
+                    statusElement.textContent = 'غير متصل';
+                    statusElement.className = 'sensor-status';
+                }
+            });
+            
+            document.getElementById('visualTemp').textContent = '-- °C';
+            document.getElementById('visualHumidity').textContent = '-- %';
+            document.getElementById('visualHeart').textContent = '-- bpm';
+            document.getElementById('visualOxygen').textContent = '-- %';
+            document.getElementById('currentWeight').textContent = '-- كجم';
+            document.getElementById('dataAge').textContent = '--';
+        }
+
+        function updateDataAge() {
+            if (!lastDataTime) return;
+            
+            setInterval(() => {
+                if (!lastDataTime) return;
+                const age = Math.floor((Date.now() - lastDataTime) / 1000);
+                document.getElementById('dataAge').textContent = age;
+                
+                if (age > 10) {
+                    addAlert('تحذير: لم يتم استقبال بيانات جديدة منذ ' + age + ' ثانية', 'warning');
+                }
+            }, 1000);
+        }
+
+        // ============================================
+        // 🏥 فحص القيم الطبيعية
+        // ============================================
+
+        function checkTemp(temp) {
+            if (temp < 36.0) return 'منخفض جداً';
+            if (temp < 36.3) return 'منخفض قليلاً';
+            if (temp > 37.5) return 'مرتفع جداً';
+            if (temp > 37.2) return 'مرتفع قليلاً';
+            return 'ok';
+        }
+
+        function checkHeartRate(hr) {
+            if (hr < 100) return 'منخفض جداً';
+            if (hr < 120) return 'منخفض قليلاً';
+            if (hr > 180) return 'مرتفع جداً';
+            if (hr > 160) return 'مرتفع قليلاً';
+            return 'ok';
+        }
+
+        function checkOxygen(o2) {
+            if (o2 < 90) return 'منخفض خطير';
+            if (o2 < 94) return 'منخفض';
+            return 'ok';
+        }
+
+        function checkHumidity(h) {
+            if (h < 40) return 'منخفض';
+            if (h > 70) return 'مرتفع';
+            return 'ok';
+        }
+
+        function checkRespiration(rr) {
+            if (rr < 30) return 'منخفض';
+            if (rr > 60) return 'مرتفع';
+            return 'ok';
+        }
+
+        // ============================================
+        // 📊 الرسوم البيانية
+        // ============================================
+
+        function initCharts() {
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { 
+                    y: { beginAtZero: false },
+                    x: { display: true }
+                },
+                animation: { duration: 0 }
+            };
+            
+            const tempCtx = document.getElementById('tempChart');
+            if (tempCtx) {
+                charts.temp = new Chart(tempCtx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'درجة الحرارة',
+                            data: [],
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: chartOptions
+                });
+            }
+            
+            const heartCtx = document.getElementById('heartChart');
+            if (heartCtx) {
+                charts.heart = new Chart(heartCtx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'نبضات القلب',
+                            data: [],
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: chartOptions
+                });
+            }
+            
+            const oxygenCtx = document.getElementById('oxygenChart');
+            if (oxygenCtx) {
+                charts.oxygen = new Chart(oxygenCtx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'الأكسجين',
+                            data: [],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: chartOptions
+                });
+            }
+            
+            const humidityCtx = document.getElementById('humidityChart');
+            if (humidityCtx) {
+                charts.humidity = new Chart(humidityCtx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'الرطوبة',
+                            data: [],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: chartOptions
+                });
+            }
+        }
+
+        function addToChart(type, value) {
+            const now = new Date().toLocaleTimeString('ar', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+            if (!chartDataHistory[type]) chartDataHistory[type] = [];
+            if (!chartDataHistory.timestamps) chartDataHistory.timestamps = [];
+            
+            chartDataHistory[type].push(value);
+            chartDataHistory.timestamps.push(now);
+            
+            // حفظ آخر 60 قراءة فقط (ساعة واحدة عند القراءة كل دقيقة)
+            if (chartDataHistory[type].length > 60) {
+                chartDataHistory[type].shift();
+                chartDataHistory.timestamps.shift();
+            }
+            
+            // تحديث الرسم البياني
+            let chart = null;
+            if (type === 'temperature') chart = charts.temp;
+            else if (type === 'heartRate') chart = charts.heart;
+            else if (type === 'oxygen') chart = charts.oxygen;
+            else if (type === 'humidity') chart = charts.humidity;
+            
+            if (chart) {
+                chart.data.labels = chartDataHistory.timestamps;
+                chart.data.datasets[0].data = chartDataHistory[type];
+                chart.update();
+            }
+        }
+
+        // ============================================
+        // 💡 التحكم في الإضاءات الثلاثة
+        // ============================================
+
+        function toggleNormalLight(enabled) {
+            const lightElement = document.getElementById('lightNormalControl');
+            const indicator = document.getElementById('normalLightIndicator');
+            
+            if (enabled) {
+                lightElement.classList.add('active');
+                indicator.classList.add('active-system');
+                const intensity = document.getElementById('normalLightIntensity').value;
+                lightElement.style.opacity = intensity / 100;
+                addAlert('تم تفعيل الإضاءة العادية', 'info');
+                
+                if (isConnected) {
+                    sendCommandToArduino('/api/light', { mode: 1, intensity: parseInt(intensity) });
+                }
+            } else {
+                lightElement.classList.remove('active');
+                indicator.classList.remove('active-system');
+                addAlert('تم إيقاف الإضاءة العادية', 'info');
+                
+                if (isConnected) {
+                    sendCommandToArduino('/api/light', { mode: 0 });
+                }
+            }
+        }
+
+        function updateNormalLightIntensity(value) {
+            document.getElementById('normalLightValue').textContent = value + '%';
+            const lightElement = document.getElementById('lightNormalControl');
+            const isActive = document.getElementById('normalLightSwitch').checked;
+            
+            if (isActive) {
+                lightElement.style.opacity = value / 100;
+                
+                if (isConnected) {
+                    sendCommandToArduino('/api/light', { mode: 1, intensity: parseInt(value) });
+                }
+            }
+        }
+
+        function toggleJaundiceLight(enabled) {
+            const lightElement = document.getElementById('lightJaundiceControl');
+            const indicator = document.getElementById('jaundiceLightIndicator');
+            
+            if (enabled) {
+                if (!confirm('⚠️ هل تريد تفعيل العلاج الضوئي لليرقان؟\n\nالطول الموجي: 450-470nm\nالاستخدام: علاج اليرقان الوليدي')) {
+                    document.getElementById('jaundiceSwitch').checked = false;
+                    return;
+                }
+                
+                lightElement.classList.add('active');
+                indicator.classList.add('active-system');
+                const intensity = document.getElementById('jaundiceLightIntensity').value;
+                lightElement.style.opacity = intensity / 100;
+                addAlert('تم تفعيل العلاج الضوئي - 450-470nm', 'warning');
+                
+                if (isConnected) {
+                    sendCommandToArduino('/api/light', { mode: 2, intensity: parseInt(intensity) });
+                }
+                
+                if (document.getElementById('uvSwitch').checked) {
+                    document.getElementById('uvSwitch').checked = false;
+                    toggleUVSterilization(false);
+                }
+            } else {
+                lightElement.classList.remove('active');
+                indicator.classList.remove('active-system');
+                addAlert('تم إيقاف العلاج الضوئي', 'info');
+                
+                if (isConnected) {
+                    sendCommandToArduino('/api/light', { mode: 0 });
+                }
+            }
+        }
+
+        function updateJaundiceLightIntensity(value) {
+            document.getElementById('jaundiceLightValue').textContent = value + '%';
+            const lightElement = document.getElementById('lightJaundiceControl');
+            const isActive = document.getElementById('jaundiceSwitch').checked;
+            
+            if (isActive) {
+                lightElement.style.opacity = value / 100;
+                
+                if (isConnected) {
+                    sendCommandToArduino('/api/light', { mode: 2, intensity: parseInt(value) });
+                }
+            }
+        }
+
+        function toggleUVSterilization(enabled) {
+            const lightElement = document.getElementById('lightUVControl');
+            const indicator = document.getElementById('uvLightIndicator');
+            
+            if (enabled) {
+                if (!confirm('⚠️ تحذير أمان حرج!\n\nهل أنت متأكد من بدء التعقيم UV-C؟\n\n✋ يجب إخلاء الحاضنة تماماً!\n🚫 الأشعة UV-C (254nm) خطرة جداً!')) {
+                    document.getElementById('uvSwitch').checked = false;
+                    return;
+                }
+                
+                lightElement.classList.add('active');
+                indicator.classList.add('active-system');
+                lightElement.style.opacity = 1;
+                addAlert('بدء التعقيم UV-C - 254nm', 'danger');
+                
+                if (isConnected) {
+                    const duration = parseInt(document.getElementById('uvDuration').value);
+                    sendCommandToArduino('/api/light', { mode: 3, intensity: 100, duration: duration });
+                }
+                
+                if (document.getElementById('normalLightSwitch').checked) {
+                    document.getElementById('normalLightSwitch').checked = false;
+                    toggleNormalLight(false);
+                }
+                if (document.getElementById('jaundiceSwitch').checked) {
+                    document.getElementById('jaundiceSwitch').checked = false;
+                    toggleJaundiceLight(false);
+                }
+            } else {
+                lightElement.classList.remove('active');
+                indicator.classList.remove('active-system');
+                addAlert('تم إيقاف التعقيم UV-C', 'info');
+                
+                if (isConnected) {
+                    sendCommandToArduino('/api/light', { mode: 0 });
+                }
+            }
+        }
+
+        function updateUVDuration(value) {
+            document.getElementById('uvDurationValue').textContent = value + ' د';
+        }
+
+        // ============================================
+        // 🎬 التحكم في العرض ثلاثي الأبعاد
+        // ============================================
+
+        function toggleRotationControl() {
+            const incubator = document.getElementById('incubator3dControl');
+            isRotatingControl = !isRotatingControl;
+            
+            if (isRotatingControl) {
+                incubator.classList.add('rotating');
+                document.getElementById('rotationIconControl').textContent = '⏸️';
+                document.getElementById('rotationTextControl').textContent = 'إيقاف الدوران';
+            } else {
+                incubator.classList.remove('rotating');
+                document.getElementById('rotationIconControl').textContent = '▶️';
+                document.getElementById('rotationTextControl').textContent = 'دوران تلقائي';
+            }
+        }
+
+        function resetViewControl() {
+            const incubator = document.getElementById('incubator3dControl');
+            incubator.classList.remove('rotating');
+            incubator.style.transform = 'translate(-50%, -50%) rotateX(20deg) rotateY(0deg) scale(1)';
+            isRotatingControl = false;
+            currentZoom = 1;
+            document.getElementById('rotationIconControl').textContent = '▶️';
+            document.getElementById('rotationTextControl').textContent = 'دوران تلقائي';
+        }
+
+        // ============================================
+        // 🤖 نظام الذكاء الاصطناعي
+        // ============================================
+
+        function runAIAnalysis() {
+            if (!isConnected) {
+                addAlert('⚠️ يجب الاتصال بـ Arduino أولاً', 'warning');
+                return;
+            }
+            
+            addAlert('بدء التحليل الشامل بالذكاء الاصطناعي...', 'info');
+            
+            setTimeout(() => {
+                calculateHealthScore();
+                predictRisks();
+                generateRecommendations();
+                
+                addAlert('اكتمل التحليل الشامل بنجاح', 'success');
+            }, 2000);
+        }
+
+        function calculateHealthScore() {
+            const temp = parseFloat(document.getElementById('bodyTemp')?.textContent || 0);
+            const heart = parseInt(document.getElementById('heartRate')?.textContent || 0);
+            const oxygen = parseInt(document.getElementById('oxygenLevel')?.textContent || 0);
+            
+            if (temp === 0 || heart === 0 || oxygen === 0) {
+                document.getElementById('aiHealthScore').textContent = '--';
+                document.getElementById('aiRiskLevel').textContent = '--';
+                return;
+            }
+            
+            let score = 100;
+            
+            if (temp < 36.0 || temp > 37.5) score -= 15;
+            else if (temp < 36.3 || temp > 37.2) score -= 5;
+            
+            if (heart < 100 || heart > 180) score -= 15;
+            else if (heart < 120 || heart > 160) score -= 5;
+            
+            if (oxygen < 90) score -= 20;
+            else if (oxygen < 94) score -= 10;
+            
+            aiModel.healthScore = Math.max(0, Math.min(100, score));
+            document.getElementById('aiHealthScore').textContent = aiModel.healthScore;
+            
+            if (aiModel.healthScore >= 90) {
+                aiModel.riskLevel = 'منخفض';
+                document.getElementById('aiRiskLevel').style.color = '#10b981';
+            } else if (aiModel.healthScore >= 70) {
+                aiModel.riskLevel = 'متوسط';
+                document.getElementById('aiRiskLevel').style.color = '#f59e0b';
+            } else {
+                aiModel.riskLevel = 'مرتفع';
+                document.getElementById('aiRiskLevel').style.color = '#ef4444';
+            }
+            
+            document.getElementById('aiRiskLevel').textContent = aiModel.riskLevel;
+            
+            // تحديث مخاطر الحالات الحرجة
+            updateCriticalRisks();
+        }
+
+        function updateCriticalRisks() {
+            const temp = parseFloat(document.getElementById('bodyTemp')?.textContent || 36.5);
+            const heart = parseInt(document.getElementById('heartRate')?.textContent || 140);
+            const oxygen = parseInt(document.getElementById('oxygenLevel')?.textContent || 96);
+            
+            let sepsisRisk = 5;
+            if (temp > 38 || temp < 36) sepsisRisk += 15;
+            if (heart > 160) sepsisRisk += 10;
+            sepsisRisk = Math.min(95, sepsisRisk);
+            
+            let necRisk = 8;
+            
+            let rdsRisk = 12;
+            if (oxygen < 92) rdsRisk += 20;
+            rdsRisk = Math.min(95, rdsRisk);
+            
+            updateCriticalRisk('sepsis', sepsisRisk);
+            updateCriticalRisk('nec', necRisk);
+            updateCriticalRisk('rds', rdsRisk);
+        }
+
+        function updateCriticalRisk(type, value) {
+            aiModel.criticalRisks[type] = value;
+            
+            const riskBar = document.getElementById(`${type}Risk`);
+            const riskPercent = document.getElementById(`${type}Percent`);
+            
+            if (riskBar && riskPercent) {
+                riskBar.style.width = value + '%';
+                riskPercent.textContent = value + '%';
+                
+                if (value < 20) {
+                    riskPercent.style.color = 'var(--success)';
+                } else if (value < 50) {
+                    riskPercent.style.color = 'var(--warning)';
+                } else {
+                    riskPercent.style.color = 'var(--danger)';
+                }
+            }
+        }
+
+        function predictRisks() {
+            aiModel.predictions = [];
+            
+            const temp = parseFloat(document.getElementById('bodyTemp')?.textContent || 36.5);
+            const oxygen = parseInt(document.getElementById('oxygenLevel')?.textContent || 96);
+            
+            if (temp < 36.5) {
+                aiModel.predictions.push({
+                    type: 'high',
+                    icon: '🌡️',
+                    title: 'احتمالية انخفاض حرارة الجسم',
+                    description: 'درجة الحرارة أقل من المعدل الطبيعي',
+                    probability: 75
+                });
+            }
+            
+            if (oxygen < 95) {
+                aiModel.predictions.push({
+                    type: 'high',
+                    icon: '🫁',
+                    title: 'احتمالية نقص الأكسجة',
+                    description: 'مستوى الأكسجين منخفض',
+                    probability: 70
+                });
+            }
+            
+            if (aiModel.predictions.length === 0) {
+                aiModel.predictions.push({
+                    type: 'low',
+                    icon: '✅',
+                    title: 'حالة مستقرة وممتازة',
+                    description: 'جميع المؤشرات ضمن النطاق الطبيعي',
+                    probability: 95
+                });
+            }
+            
+            displayRiskPredictions();
+        }
+
+        function displayRiskPredictions() {
+            const container = document.getElementById('aiRiskPredictions');
+            
+            if (aiModel.predictions.length === 0) {
+                container.innerHTML = '<p style="text-align: center; opacity: 0.6; padding: 20px;">لا توجد مخاطر</p>';
+                return;
+            }
+            
+            container.innerHTML = aiModel.predictions.map(pred => `
+                <div class="risk-item risk-${pred.type}">
+                    <div class="risk-icon">${pred.icon}</div>
+                    <div class="risk-content">
+                        <div class="risk-title">${pred.title}</div>
+                        <div class="risk-description">${pred.description}</div>
+                    </div>
+                    <div class="risk-probability">${pred.probability}%</div>
+                </div>
+            `).join('');
+        }
+
+        function generateRecommendations() {
+            aiModel.recommendations = [];
+            
+            const temp = parseFloat(document.getElementById('bodyTemp')?.textContent || 36.5);
+            const oxygen = parseInt(document.getElementById('oxygenLevel')?.textContent || 96);
+            
+            if (temp < 36.3) {
+                aiModel.recommendations.push({
+                    icon: '🔥',
+                    title: 'زيادة حرارة الحاضنة',
+                    text: 'يُنصح برفع درجة الحرارة بمقدار 0.5°C',
+                    priority: 'high'
+                });
+            }
+            
+            if (oxygen < 95) {
+                aiModel.recommendations.push({
+                    icon: '🫁',
+                    title: 'تحسين الأكسجة',
+                    text: 'زيادة تركيز الأكسجين بنسبة 2-3%',
+                    priority: 'high'
+                });
+            }
+            
+            aiModel.recommendations.push({
+                icon: '✅',
+                title: 'الاستمرار في المراقبة',
+                text: 'الحالة مستقرة - متابعة روتينية',
+                priority: 'low'
+            });
+            
+            displayRecommendations();
+        }
+
+        function displayRecommendations() {
+            const container = document.getElementById('aiRecommendations');
+            
+            container.innerHTML = aiModel.recommendations.map(rec => `
+                <div class="recommendation-item">
+                    <div class="recommendation-icon">${rec.icon}</div>
+                    <div class="recommendation-content">
+                        <div class="recommendation-title">${rec.title}</div>
+                        <div class="recommendation-text">${rec.text}</div>
+                        <span class="recommendation-priority priority-${rec.priority}">
+                            ${rec.priority === 'high' ? 'أولوية عالية' : rec.priority === 'medium' ? 'أولوية متوسطة' : 'أولوية منخفضة'}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============================================
+        // 🎨 الثيمات
+        // ============================================
+
+        const themes = {
+            light: { '--primary': '#667eea', '--secondary': '#764ba2', '--bg': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
+            dark: { '--primary': '#667eea', '--secondary': '#764ba2', '--bg': '#111827' },
+            blue: { '--primary': '#3b82f6', '--secondary': '#1e40af', '--bg': 'linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)' },
+            green: { '--primary': '#10b981', '--secondary': '#047857', '--bg': 'linear-gradient(135deg, #10b981 0%, #047857 100%)' },
+            purple: { '--primary': '#a855f7', '--secondary': '#7c3aed', '--bg': 'linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)' },
+            orange: { '--primary': '#f59e0b', '--secondary': '#d97706', '--bg': 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }
+        };
+
+        function applyTheme() {
+            const theme = document.getElementById('themeSelect').value;
+            const root = document.documentElement;
+            document.body.setAttribute('data-theme', theme === 'dark' ? 'dark' : 'light');
+            const colors = themes[theme];
+            for (const [key, value] of Object.entries(colors)) {
+                root.style.setProperty(key, value);
+            }
+            localStorage.setItem('selectedTheme', theme);
+        }
+
+        function updateTempMin(value) {
+            document.getElementById('tempMinValue').textContent = value + '°C';
+        }
+
+        function updateTempMax(value) {
+            document.getElementById('tempMaxValue').textContent = value + '°C';
+        }
+
+        function exportData() {
+            const data = {
+                timestamp: new Date(),
+                temperature: document.getElementById('bodyTemp').textContent,
+                heartRate: document.getElementById('heartRate').textContent,
+                oxygen: document.getElementById('oxygenLevel').textContent
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `incubator_data_${Date.now()}.json`;
+            link.click();
+            addAlert('تم تصدير البيانات', 'success');
+        }
+
+        function saveSettings() {
+            addAlert('تم حفظ الإعدادات', 'success');
+        }
+
+        // ============================================
+        // 🎛️ تحديث أزرار التحكم
+        // ============================================
+
+        function enableControlButtons() {
+            document.querySelectorAll('#control input, #control button').forEach(el => {
+                el.disabled = false;
+            });
+            document.getElementById('emergencyButton').disabled = false;
+            document.getElementById('btnAIAnalysis').disabled = false;
+            
+            // تفعيل الإضاءة العادية افتراضياً
+            if (document.getElementById('normalLightSwitch').checked) {
+                toggleNormalLight(true);
+            }
+        }
+
+        function disableControlButtons() {
+            document.querySelectorAll('#control input, #control button').forEach(el => {
+                el.disabled = true;
+            });
+            document.getElementById('emergencyButton').disabled = true;
+        }
+
+        async function sendCommandToArduino(endpoint, data) {
+            if (!isConnected) {
+                addAlert('⚠️ غير متصل بـ Arduino', 'warning');
+                return;
+            }
+            
+            const ip = document.getElementById('arduinoIP').value;
+            const port = document.getElementById('arduinoPort').value;
+            
+            try {
+                const response = await fetch(`http://${ip}:${port}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    console.log('✅ تم إرسال الأمر:', endpoint, data);
+                    addAlert('تم إرسال الأمر بنجاح', 'success');
+                } else {
+                    throw new Error('فشل إرسال الأمر');
+                }
+            } catch (error) {
+                console.error('❌ خطأ في إرسال الأمر:', error);
+                addAlert('فشل إرسال الأمر إلى Arduino', 'danger');
+            }
+        }
+
+        function updateHeatingTemp(value) {
+            document.getElementById('heatingTempValue').textContent = value + '°C';
+            if (isConnected) {
+                sendCommandToArduino('/api/heating', { 
+                    temperature: parseFloat(value),
+                    enabled: document.getElementById('heatingSwitch').checked 
+                });
+            }
+        }
+
+        function updateHumidityTarget(value) {
+            document.getElementById('humidityTargetValue').textContent = value + '%';
+            if (isConnected) {
+                sendCommandToArduino('/api/humidity', { 
+                    target: parseInt(value),
+                    enabled: document.getElementById('humidifierSwitch').checked 
+                });
+            }
+        }
+
+        function updateOxygenLevel(value) {
+            document.getElementById('oxygenLevelValue').textContent = value + '%';
+            if (isConnected) {
+                sendCommandToArduino('/api/oxygen', { 
+                    level: parseInt(value),
+                    enabled: document.getElementById('oxygenSwitch').checked 
+                });
+            }
+        }
+
+        function quickPreset(preset) {
+            if (!isConnected) {
+                alert('⚠️ غير متصل بـ Arduino');
+                return;
+            }
+            
+            switch(preset) {
+                case 'normal':
+                    document.getElementById('heatingTemp').value = 36.5;
+                    updateHeatingTemp(36.5);
+                    addAlert('تم تطبيق الوضع العادي', 'success');
+                    break;
+                case 'intensive':
+                    document.getElementById('heatingTemp').value = 37;
+                    updateHeatingTemp(37);
+                    document.getElementById('oxygenLevelControl').value = 40;
+                    updateOxygenLevel(40);
+                    addAlert('تم تطبيق الوضع المكثف', 'warning');
+                    break;
+            }
+        }
+
+        function emergencyStop() {
+            if (!isConnected) {
+                alert('⚠️ غير متصل بـ Arduino');
+                return;
+            }
+            
+            if (confirm('⚠️ هل تريد إيقاف جميع الأنظمة؟')) {
+                sendCommandToArduino('/api/emergency-stop', {});
+                addAlert('تم إيقاف جميع الأنظمة في وضع الطوارئ', 'danger');
+            }
+        }
+
+        function emergencyAlert() {
+            alert('🚨 تنبيه طوارئ!\n\nسيتم إخطار الطاقم الطبي فوراً.\n\nرقم الحاضنة: NICU-001\nالوقت: ' + new Date().toLocaleTimeString('ar'));
+            addAlert('تم إرسال تنبيه طوارئ إلى الطاقم الطبي', 'danger');
+            document.body.style.animation = 'emergency-flash 0.5s 3';
+        }
+
+        // ============================================
+        // 🤖 الدردشة مع AI المساعد الطبي
+        // ============================================
+
+        let chatHistory = [];
+
+        async function sendAIMessage() {
+            const input = document.getElementById('aiChatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // إضافة رسالة المستخدم
+            addChatMessage(message, 'user');
+            input.value = '';
+            
+            // تعطيل زر الإرسال وإظهار مؤشر الكتابة
+            const sendBtn = document.getElementById('aiSendBtn');
+            sendBtn.disabled = true;
+            showTyping(true);
+            
+            try {
+                // استدعاء Claude API
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'anthropic-version': '2023-06-01'
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-sonnet-4-20250514',
+                        max_tokens: 1024,
+                        messages: [
+                            ...chatHistory,
+                            {
+                                role: 'user',
+                                content: message
+                            }
+                        ],
+                        system: `أنت مساعد طبي متخصص في رعاية الأطفال الخدج (Premature Infants) وحديثي الولادة في وحدة العناية المركزة لحديثي الولادة (NICU).
+
+مهامك:
+- تقديم معلومات طبية دقيقة وموثوقة عن رعاية الأطفال الخدج
+- شرح القراءات الطبية والمؤشرات الحيوية بطريقة واضحة
+- تقديم نصائح طبية احترافية ومبنية على الأدلة العلمية
+- الإجابة على الاستفسارات الطبية بلغة عربية واضحة
+- تحذير المستخدم عند الحاجة لاستشارة طبيب متخصص فوراً
+
+القراءات الطبيعية للطفل الخديج:
+- درجة الحرارة: 36.5-37.5°C
+- نبضات القلب: 120-160 نبضة/دقيقة
+- تشبع الأكسجين: 90-95%
+- معدل التنفس: 40-60 نفس/دقيقة
+- الرطوبة: 50-70%
+
+كن محترفاً، دقيقاً، ومتعاطفاً في ردودك.`
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('فشل الاتصال بـ AI');
+                }
+
+                const data = await response.json();
+                const aiResponse = data.content[0].text;
+                
+                // إضافة رسالة AI
+                showTyping(false);
+                addChatMessage(aiResponse, 'ai');
+                
+                // حفظ المحادثة
+                chatHistory.push(
+                    { role: 'user', content: message },
+                    { role: 'assistant', content: aiResponse }
+                );
+                
+                // الاحتفاظ بآخر 10 رسائل فقط لتوفير الذاكرة
+                if (chatHistory.length > 20) {
+                    chatHistory = chatHistory.slice(-20);
+                }
+                
+            } catch (error) {
+                console.error('خطأ في الاتصال بـ AI:', error);
+                showTyping(false);
+                addChatMessage('عذراً، حدث خطأ في الاتصال بالمساعد الذكي. يرجى المحاولة مرة أخرى.', 'ai', true);
+            } finally {
+                sendBtn.disabled = false;
+            }
+        }
+
+        function addChatMessage(text, sender, isError = false) {
+            const messagesContainer = document.getElementById('aiChatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `ai-message ${sender}`;
+            
+            const time = new Date().toLocaleTimeString('ar', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            
+            const avatar = sender === 'user' ? '👤' : '🤖';
+            
+            messageDiv.innerHTML = `
+                <div class="ai-avatar">${avatar}</div>
+                <div>
+                    <div class="ai-message-content" ${isError ? 'style="background: #fee2e2; color: #991b1b;"' : ''}>
+                        ${text.replace(/\n/g, '<br>')}
+                    </div>
+                    <div class="ai-message-time">${time}</div>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showTyping(show) {
+            const typingIndicator = document.getElementById('aiTyping');
+            if (show) {
+                typingIndicator.classList.add('active');
+                const messagesContainer = document.getElementById('aiChatMessages');
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            } else {
+                typingIndicator.classList.remove('active');
+            }
+        }
+
+        function sendSuggestion(text) {
+            document.getElementById('aiChatInput').value = text;
+            sendAIMessage();
+        }
+
+        function handleChatKeydown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendAIMessage();
+            }
+        }
+
+        // ============================================
+        // 🔔 التنبيهات
+        // ============================================
+
+        function addAlert(message, type = 'info') {
+            const alertsList = document.getElementById('alertsList');
+            
+            const icons = { 
+                'info': 'ℹ️', 
+                'warning': '⚠️', 
+                'danger': '🚨', 
+                'success': '✅' 
+            };
+            
+            const titles = {
+                'info': 'معلومة',
+                'warning': 'تنبيه',
+                'danger': 'تحذير',
+                'success': 'نجاح'
+            };
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-item alert-${type}`;
+            alertDiv.innerHTML = `
+                <div class="alert-icon">${icons[type]}</div>
+                <div class="alert-content">
+                    <strong>${titles[type]}:</strong> ${message}
+                </div>
+                <div class="alert-time">${new Date().toLocaleTimeString('ar')}</div>
+            `;
+            
+            if (alertsList) {
+                alertsList.insertBefore(alertDiv, alertsList.firstChild);
+                if (alertsList.children.length > 50) {
+                    alertsList.removeChild(alertsList.lastChild);
+                }
+            }
+        }
+
+        // ============================================
+        // 🎨 واجهة المستخدم
+        // ============================================
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                if (tab.getAttribute('onclick').includes(tabName)) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            const content = document.getElementById(tabName);
+            if (content) content.classList.add('active');
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const theme = body.getAttribute('data-theme');
+            body.setAttribute('data-theme', theme === 'light' ? 'dark' : 'light');
+        }
+
+        // ============================================
+        // 📝 تعديل معلومات المريض
+        // ============================================
+        
+        let isEditingPatient = false;
+
+        function toggleEditPatient() {
+            isEditingPatient = !isEditingPatient;
+            
+            const editBtn = document.getElementById('editPatientBtn');
+            const editIcon = document.getElementById('editIcon');
+            const editText = document.getElementById('editText');
+            
+            // قائمة الحقول
+            const fields = [
+                { value: 'patientName', edit: 'patientNameEdit' },
+                { value: 'patientBirthDate', edit: 'patientBirthDateEdit' },
+                { value: 'patientGestationalAge', edit: 'patientGestationalAgeEdit' },
+                { value: 'patientStayDuration', edit: 'patientStayDurationEdit' },
+                { value: 'currentWeight', edit: 'currentWeightEdit' }
+            ];
+            
+            if (isEditingPatient) {
+                // وضع التعديل
+                editIcon.textContent = '💾';
+                editText.textContent = 'حفظ';
+                editBtn.classList.add('btn-success');
+                editBtn.classList.remove('btn-primary');
+                
+                // إخفاء القيم وإظهار حقول الإدخال
+                fields.forEach(field => {
+                    const valueEl = document.getElementById(field.value);
+                    const editEl = document.getElementById(field.edit);
+                    
+                    if (valueEl && editEl) {
+                        // نقل القيمة الحالية إلى حقل الإدخال
+                        if (field.value === 'patientBirthDate') {
+                            // الاحتفاظ بالقيمة في حقل التاريخ
+                        } else {
+                            editEl.value = valueEl.textContent;
+                        }
+                        
+                        valueEl.style.display = 'none';
+                        editEl.style.display = 'block';
+                    }
+                });
+                
+                addAlert('يمكنك الآن تعديل معلومات المريض', 'info');
+            } else {
+                // وضع الحفظ
+                editIcon.textContent = '✏️';
+                editText.textContent = 'تعديل';
+                editBtn.classList.remove('btn-success');
+                editBtn.classList.add('btn-primary');
+                
+                // حفظ القيم وإظهارها
+                fields.forEach(field => {
+                    const valueEl = document.getElementById(field.value);
+                    const editEl = document.getElementById(field.edit);
+                    
+                    if (valueEl && editEl) {
+                        // تحديث القيمة المعروضة
+                        if (field.value === 'patientBirthDate') {
+                            // تحويل التاريخ إلى صيغة عربية
+                            const dateValue = editEl.value;
+                            if (dateValue) {
+                                const date = new Date(dateValue);
+                                const formattedDate = date.toLocaleDateString('ar-DZ');
+                                valueEl.textContent = formattedDate;
+                            }
+                        } else {
+                            valueEl.textContent = editEl.value;
+                        }
+                        
+                        editEl.style.display = 'none';
+                        valueEl.style.display = 'block';
+                    }
+                });
+                
+                addAlert('تم حفظ معلومات المريض بنجاح', 'success');
+                
+                // حفظ في localStorage (اختياري)
+                savePatientData();
+            }
+        }
+
+        function savePatientData() {
+            const patientData = {
+                name: document.getElementById('patientNameEdit').value,
+                birthDate: document.getElementById('patientBirthDateEdit').value,
+                gestationalAge: document.getElementById('patientGestationalAgeEdit').value,
+                stayDuration: document.getElementById('patientStayDurationEdit').value,
+                weight: document.getElementById('currentWeightEdit').value,
+                lastModified: new Date().toISOString()
+            };
+            
+            localStorage.setItem('patientInfo', JSON.stringify(patientData));
+            console.log('✅ تم حفظ بيانات المريض:', patientData);
+        }
+
+        function loadPatientData() {
+            const savedData = localStorage.getItem('patientInfo');
+            if (savedData) {
+                try {
+                    const patientData = JSON.parse(savedData);
+                    
+                    if (patientData.name) {
+                        document.getElementById('patientName').textContent = patientData.name;
+                        document.getElementById('patientNameEdit').value = patientData.name;
+                    }
+                    
+                    if (patientData.birthDate) {
+                        const date = new Date(patientData.birthDate);
+                        document.getElementById('patientBirthDate').textContent = date.toLocaleDateString('ar-DZ');
+                        document.getElementById('patientBirthDateEdit').value = patientData.birthDate;
+                    }
+                    
+                    if (patientData.gestationalAge) {
+                        document.getElementById('patientGestationalAge').textContent = patientData.gestationalAge;
+                        document.getElementById('patientGestationalAgeEdit').value = patientData.gestationalAge;
+                    }
+                    
+                    if (patientData.stayDuration) {
+                        document.getElementById('patientStayDuration').textContent = patientData.stayDuration;
+                        document.getElementById('patientStayDurationEdit').value = patientData.stayDuration;
+                    }
+                    
+                    if (patientData.weight) {
+                        document.getElementById('currentWeight').textContent = patientData.weight;
+                        document.getElementById('currentWeightEdit').value = patientData.weight;
+                    }
+                    
+                    console.log('✅ تم تحميل بيانات المريض المحفوظة');
+                } catch (error) {
+                    console.error('❌ خطأ في تحميل بيانات المريض:', error);
+                }
+            }
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const element = document.getElementById('lastUpdate');
+            if (element) {
+                element.textContent = now.toLocaleTimeString('ar');
+            }
+        }
+
+        // ============================================
+        // 🚀 التهيئة
+        // ============================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 بدء تحميل النظام - وضع حقيقي فقط');
+            
+            // استعادة IP المحفوظ
+            initConnection();
+            
+            initCharts();
+            
+            // تحميل الثيم المحفوظ
+            const savedTheme = localStorage.getItem('selectedTheme');
+            if (savedTheme) {
+                document.getElementById('themeSelect').value = savedTheme;
+                applyTheme();
+            }
+            
+            // تحميل بيانات المريض المحفوظة
+            loadPatientData();
+            
+            // تحديث الوقت كل ثانية
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            console.log('✅ تم تحميل النظام بنجاح');
+        });
+    </script>
+</body>
+</html>
